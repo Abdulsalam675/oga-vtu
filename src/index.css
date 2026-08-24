@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Amaranth:wght@400;700&family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  /* Colors */
+  --primary: #10b981;
+  --primary-dark: #04aa76;
+  --secondary: #764ba2;
+  --success: #00c853;
+  --error: #d32f2f;
+  --warning: #ffa726;
+  --info: #29b6f6;
+  --text-primary: #222222;
+  --text-secondary: #888888;
+  --text-tertiary: #999999;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #efefef;
+  --border-light: #e0e0e0;
+  --border-medium: #d0d0d0;
+
+  /* Typography */
+  --font-sans:
+    "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display:
+    "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-accent: "Amaranth", sans-serif;
+
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+span {
+  font-family: var(--font-sans);
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Component utility classes that rely on root CSS variables */
+.pin-input {
+  background-color: var(--bg-secondary);
+  color: var(--primary);
+  border: 1px solid var(--border-medium);
+}
+.pin-input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.pin-chip {
+  background-color: var(--bg-secondary);
+  color: var(--primary);
+  border: 2px solid var(--border-medium);
+}
+
+.keypad-button {
+  background-color: var(--bg-secondary);
+  color: var(--primary);
+}
+.keypad-button:hover {
+  background-color: var(--bg-tertiary);
+}
+.keypad-button:active {
+  opacity: 0.95;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--bg-primary);
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.input-wrapper {
+  background-color: var(--bg-secondary);
+  border-radius: 9999px;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+.input-wrapper input::placeholder {
+  color: var(--text-secondary);
+}
+
+.muted-text {
+  color: var(--text-secondary);
+}
+
+.back-button {
+  background-color: var(--back-button-background, var(--bg-secondary));
+}
+.back-button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Responsive typography */
