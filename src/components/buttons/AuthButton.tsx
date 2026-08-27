@@ -13,7 +13,7 @@ function AuthButton({ icon, label, color, onClick }: AuthButtonProps) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center justify-between py-4 px-6 rounded-full btn-secondary hover:opacity-95 transition-colors"
+      className="w-full flex items-center justify-between py-4 px-6 rounded-full btn-secondary hover:opacity-95 transition-colors cursor-pointer"
       style={{ color: "var(--text-primary)" }}
     >
       <Icon

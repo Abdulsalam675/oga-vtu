@@ -27,8 +27,8 @@ function Button({
       type={htmlType}
       disabled={disabled || loading}
       onClick={onClick}
-      className={`${baseStyles} ${variantClass} ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-      >
+      className={`${baseStyles} ${variantClass} ${disabled || loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+    >
       {loading ? "Loading..." : label}
     </button>
   );
