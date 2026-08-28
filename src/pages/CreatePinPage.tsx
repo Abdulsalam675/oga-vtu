@@ -69,7 +69,9 @@ function CreatePin() {
                 <div
                   key={index}
                   className={`h-3.5 w-3.5 rounded-full transition-colors sm:h-4 sm:w-4 ${
-                    index < pin.length ? "bg-[var(--primary)]" : "bg-gray-300"
+                    index < pin.length
+                      ? "bg-[color:var(--primary)]"
+                      : "bg-gray-300"
                   }`}
                 ></div>
               ))}

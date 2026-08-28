@@ -35,7 +35,7 @@ function AuthFormLayout({
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300"
               aria-label="Go back"
             >
               <Icon icon="solar:alt-arrow-left-linear" width={20} height={20} />
