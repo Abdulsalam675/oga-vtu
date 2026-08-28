@@ -53,3 +53,10 @@ export const createPinSchema = z
     message: "PINs do not match",
     path: ["confirmPin"],
   });
+
+export type SignupEmailSchema = z.infer<typeof signupEmailSchema>;
+export type SigninEmailSchema = z.infer<typeof signinEmailSchema>;
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>;
+export type CreatePinSchema = z.infer<typeof createPinSchema>;
