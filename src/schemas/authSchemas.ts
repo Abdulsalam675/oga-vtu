@@ -40,3 +40,16 @@ export const verifyEmailSchema = z.object({
     .length(6, "Verification code must be exactly 6 digits")
     .regex(/^\d+$/, "Code must only contain numbers"),
 });
+
+export const createPinSchema = z
+  .object({
+    pin: z
+      .string()
+      .length(4, "PIN must be exactly 4 digits")
+      .regex(/^\d+$/, "PIN must only contain numbers"),
+    confirmPin: z.string().length(4, "PIN must be exactly 4 digits"),
+  })
+  .refine((data) => data.pin === data.confirmPin, {
+    message: "PINs do not match",
+    path: ["confirmPin"],
+  });
