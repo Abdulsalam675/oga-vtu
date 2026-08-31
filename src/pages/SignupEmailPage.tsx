@@ -52,7 +52,7 @@ function SignUpEmail() {
     setIsLoading(true);
     setTimeout(() => {
       navigate("/verify-email");
-    }, 2000); // two seconds delay
+    }, 2000); // 2 second delay
   }
 
   return (
@@ -66,6 +66,7 @@ function SignUpEmail() {
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >
+      {/* Email Input Field */}
       <AuthInput
         label="Email address"
         icon="solar:letter-linear"
@@ -78,6 +79,7 @@ function SignUpEmail() {
         error={errors.email}
       />
 
+      {/* Password Input Field */}
       <AuthInput
         label="Password"
         icon="solar:lock-password-linear"

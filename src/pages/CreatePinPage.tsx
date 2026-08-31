@@ -40,7 +40,7 @@ function CreatePin() {
 
           navigate("/dashboard");
         }
-      }, 2000); // 2-second delay
+      }, 2000); // 2 second delay
     }
   }
   function handleBackspace() {

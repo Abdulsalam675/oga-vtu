@@ -43,7 +43,6 @@ function ResetPassword() {
     }
 
     if (name === "confirmPassword") {
-      // Keep it silent on blur unless it's empty. Do not match check here!
       setErrors((prev) => ({ ...prev, confirmPassword: "" }));
     }
   }
@@ -51,7 +50,6 @@ function ResetPassword() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Run the full object check including the cross-field match rule on submit
     const finalCheck = resetPasswordSchema.safeParse(formData);
 
     if (!finalCheck.success) {
@@ -63,11 +61,10 @@ function ResetPassword() {
       return;
     }
 
-    // If everything matches perfectly, proceed to backend API / next screen
     setIsLoading(true);
     setTimeout(() => {
       navigate("/signin");
-    }, 2000);
+    }, 2000); // 2 second delay
   }
 
   return (

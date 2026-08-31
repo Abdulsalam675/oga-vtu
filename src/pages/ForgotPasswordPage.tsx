@@ -44,7 +44,7 @@ function ForgotPassword() {
     setTimeout(() => {
       setIsLoading(false);
       navigate("/forgot-password/verify-email");
-    }, 2000);
+    }, 2000); // 2 second delay
   }
 
   return (
@@ -58,6 +58,7 @@ function ForgotPassword() {
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >
+      {/* Email Input Field */}
       <AuthInput
         label="Email address"
         icon="solar:letter-linear"
