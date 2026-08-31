@@ -24,18 +24,15 @@ function SplitScreenLayout({
   footer,
 }: SplitScreenLayoutProps) {
   return (
-    <div className="min-h-screen w-full flex items-stretch select-none text-gray-800 antialiased overflow-hidden">
+    <div className="min-h-screen w-full flex items-stretch select-none text-gray-dark antialiased overflow-hidden">
       {/* LEFT CONTAINER*/}
-      <div className="hidden md:flex md:w-[40%] flex-col justify-between p-14 sticky top-0 h-screen text-white overflow-hidden antialiased relative bg-gradient-to-b from-[#10b981] via-[#059669] to-[#064e3b]">
+      <div className="hidden md:flex md:w-[40%] flex-col justify-between p-14 sticky top-0 h-screen text-white overflow-hidden antialiased relative bg-gradient-to-b from-primary via-[#059669] to-[#064e3b]">
         <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] rounded-full bg-white/[0.08] blur-[100px] pointer-events-none animate-pulse duration-[6000ms]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-emerald-400/10 blur-[90px] pointer-events-none" />
 
         {/* Top Header (LOGO)*/}
         <header className="relative z-20 flex items-center gap-3">
-          <span
-            style={{ fontFamily: "var(--font-accent)" }}
-            className="text-2xl font-black text-white tracking-tight block drop-shadow-sm"
-          >
+          <span className="text-2xl font-black text-white tracking-tight block drop-shadow-sm">
             Oga
           </span>
         </header>
@@ -47,7 +44,7 @@ function SplitScreenLayout({
 
           <div className="h-[2px] w-6 bg-white/50 rounded-full mb-4 shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
 
-          <h2 className="text-xl font-bold text-white tracking-tight leading-snug drop-shadow-sm">
+          <h2 className="text-xl font-bold text-gray-dark tracking-tight leading-snug drop-shadow-sm">
             Automated Utility & Transaction Network.
           </h2>
 
@@ -79,23 +76,17 @@ function SplitScreenLayout({
         <div className="w-full max-w-md">
           {/* Mobile Brand Asset */}
           <div className="mb-10 text-left md:hidden">
-            <span
-              style={{
-                fontFamily: "var(--font-accent)",
-                color: "var(--primary)",
-              }}
-              className="text-2xl font-bold tracking-wide inline-block"
-            >
+            <span className="text-2xl font-bold tracking-wide inline-block text-primary">
               Oga
             </span>
           </div>
 
           {/* Title and Subtitle */}
           <div className="space-y-2 mb-10 text-left">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-950">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-dark">
               {right.title}
             </h1>
-            <p className="text-base text-gray-500 leading-relaxed">
+            <p className="text-base text-gray-semi-dark leading-relaxed">
               {right.subtitle}
             </p>
           </div>
@@ -104,19 +95,18 @@ function SplitScreenLayout({
           <div className="space-y-4">{children}</div>
 
           {/* Navigation rerouting links */}
-          <p className="mt-8 text-sm text-gray-500 text-center font-semibold">
+          <p className="mt-8 text-sm text-gray-semi-dark text-center font-medium">
             {link.label}{" "}
             <Link
               to={link.to}
-              className="underline underline-offset-3 hover:opacity-75 transition-opacity"
-              style={{ color: "#10b981" }}
+              className="underline underline-offset-3 hover:opacity-75 transition-opacity text-primary"
             >
               {link.linkName}
             </Link>
           </p>
 
           {/* Supplemental Footer */}
-          {footer && <div className="mt-6">{footer}</div>}
+          {footer && <div>{footer}</div>}
         </div>
       </section>
     </div>

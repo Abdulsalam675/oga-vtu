@@ -34,26 +34,26 @@ function AuthInput({
   const shouldShowError = !!error;
 
   const wrapperBorderClass = shouldShowError
-    ? "border-[color:var(--error)]"
-    : "border-gray-300 focus-within:border-[color:var(--primary)]";
+    ? "border-error"
+    : "border-transparent focus-within:border-primary";
 
   return (
     <div className="w-full">
       <label
         htmlFor={inputId}
-        className="mb-2 block text-sm font-semibold text-gray-700 pl-3"
+        className={`mb-1 block text-sm font-medium pl-3 ${shouldShowError ? "text-error" : "text-gray-semi-dark"}`}
       >
         {label}
       </label>
 
       <div
-        className={`input-wrapper flex items-center gap-3 border transition-colors ${wrapperBorderClass}`}
+        className={`flex items-center border bg-gray-extra-light transition-colors px-4 py-1 gap-1 rounded-full ${wrapperBorderClass}`}
       >
         <Icon
           icon={icon}
-          width={20}
-          height={20}
-          className="muted-text"
+          width={22}
+          height={22}
+          className="text-gray-normal shrink-0"
           aria-hidden="true"
         />
 
@@ -65,27 +65,30 @@ function AuthInput({
           name={name}
           onBlur={onBlur}
           onChange={onChange}
-          className="bg-transparent w-full focus:outline-none text-sm font-medium py-4"
+          className="bg-transparent w-full focus:outline-none text-sm font-medium py-2.5 px-2 placeholder-gray-light text-gray-normal "
         />
+
         {isPassword && (
           <button
             type="button"
-            className="muted-text hover:opacity-80 focus:outline-none"
+            className="text-gray-light hover:opacity-80 focus:outline-none shrink-0"
             aria-label="Toggle password visibility"
             onClick={() => setShowPassword(!showPassword)}
           >
             <Icon
               icon={showPassword ? "mdi:eye-off-outline" : "solar:eye-outline"}
-              width={20}
-              height={20}
-              className="muted-text hover:opacity-80 transition-colors"
+              width={22}
+              height={22}
+              className="text-gray-light hover:opacity-80 transition-colors"
               aria-hidden="true"
             />
           </button>
         )}
       </div>
+
+      {/* Keeps original field error text rendering logic */}
       {shouldShowError && (
-        <p className="mt-1 text-xs text-red-500 font-medium pl-3 animate-fade-in">
+        <p className="mt-1 text-xs text-error font-medium pl-3 animate-fade-in">
           {error}
         </p>
       )}

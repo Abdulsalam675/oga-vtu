@@ -11,7 +11,7 @@ function SignIn() {
       right={{
         title: "Welcome back!",
         subtitle:
-          "Log in securely to access your dashboard and continue processing instant top-ups.",
+          "Log in securely to access your dashboard and manage your instant top-ups.",
       }}
       link={{
         label: "Don't have an account?",
@@ -35,18 +35,18 @@ function SignIn() {
 
       {/* Layout Divider */}
       <div className="flex items-center gap-4 w-full py-2" role="separator">
-        <div className="flex-1 h-0.5 bg-gray-100"></div>
-        <span className="text-gray-400 text-xs font-bold tracking-wider uppercase">
+        <div className="flex-1 h-0.5 bg-gray-lighter"></div>
+        <span className="text-gray-light text-xs font-bold tracking-wider uppercase">
           or
         </span>
-        <div className="flex-1 h-0.5 bg-gray-100"></div>
+        <div className="flex-1 h-0.5 bg-gray-lighter"></div>
       </div>
 
       {/* Email Sign In Action Button */}
       <AuthButton
         icon="solar:letter-linear"
         label="Sign in with Email"
-        color="var(--primary)"
+        color="text-primary"
         onClick={() => navigate("/signin-email")}
       />
     </SplitScreenLayout>

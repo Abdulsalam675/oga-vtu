@@ -1,25 +1,61 @@
-import { memo, useState } from "react";
+import React, { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthFormLayout from "../components/layout/AuthFormLayout";
 import AuthInput from "../components/AuthInput";
+import { forgotPasswordSchema } from "../schemas/authSchemas";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+    setError("");
+  }
+
+  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+
+    const fieldSchema =
+      forgotPasswordSchema.shape[
+        name as keyof typeof forgotPasswordSchema.shape
+      ];
+    const result = fieldSchema.safeParse(value);
+
+    if (!result.success) {
+      setError(result.error.issues[0]?.message || "Invalid input");
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    navigate("/forgot-password/verify-email");
+
+    const result = forgotPasswordSchema.safeParse({ email });
+    if (!result.success) {
+      setError(result.error.issues[0]?.message || "Invalid email address");
+      return;
+    }
+
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/forgot-password/verify-email");
+    }, 2000);
   }
 
   return (
     <AuthFormLayout
-      title="Reset Password"
-      subtitle="Enter your email address below and we'll send you an OTP code to securely reset your account password."
+      title="Forgot Password?"
+      subtitle="Enter your email to receive a secure OTP code to reset your password."
       linkLabel="Remember your password?"
       linkTo="/signin"
       linkName="Sign In"
       buttonLabel="Send Reset Code"
+      isLoading={isLoading}
       onSubmit={handleSubmit}
     >
       <AuthInput
@@ -28,7 +64,10 @@ function ForgotPassword() {
         type="email"
         placeholder="Enter your email address"
         value={email}
-        onChange={setEmail}
+        name="email"
+        error={error}
+        onBlur={handleBlur}
+        onChange={handleChange}
       />
     </AuthFormLayout>
   );

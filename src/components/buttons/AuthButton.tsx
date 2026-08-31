@@ -13,19 +13,17 @@ function AuthButton({ icon, label, color, onClick }: AuthButtonProps) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center justify-between py-4 px-6 rounded-full btn-secondary hover:opacity-95 transition-colors cursor-pointer"
-      style={{ color: "var(--text-primary)" }}
+      className="w-full flex items-center justify-between py-4 px-6 rounded-full btn-secondary hover:opacity-95 transition-colors cursor-pointer text-gray-normal"
     >
       <Icon
         icon={icon}
         width={22}
         height={22}
-        color={color}
+        className={color}
         aria-hidden="true"
       />
       <span
-        className={`text-sm font-semibold tracking-wide`}
-        style={{ color: color }}
+        className={`text-sm font-semibold tracking-wide ${color ? color : "text-gray-dark"}`}
       >
         {label}
       </span>

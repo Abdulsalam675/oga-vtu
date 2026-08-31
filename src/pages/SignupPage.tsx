@@ -13,7 +13,7 @@ function SignUp() {
       right={{
         title: "Get started for free.",
         subtitle:
-          "Your comfort, our speed. Secure your instant airtime, data, and bill tokens here.",
+          "Fast, reliable payments. Instant airtime, data bundles, and bill utilities right here.",
       }}
       link={{
         label: "Already have an account?",
@@ -21,20 +21,18 @@ function SignUp() {
         linkName: "Sign In",
       }}
       footer={
-        <p className="text-center text-xs text-gray-400 mt-8 leading-relaxed max-w-sm mx-auto">
+        <p className="text-center text-xs md:text-sm text-gray-normal mt-4 leading-relaxed">
           By signing up, you agree to our{" "}
           <Link
             to="/privacy"
-            className="underline underline-offset-2 hover:opacity-75 transition-opacity"
-            style={{ color: "var(--primary)" }}
+            className="underline underline-offset-2 hover:opacity-75 transition-opacity text-primary"
           >
             Privacy Policy
           </Link>{" "}
           and{" "}
           <Link
             to="/terms"
-            className="underline underline-offset-2 hover:opacity-75 transition-opacity"
-            style={{ color: "var(--primary)" }}
+            className="underline underline-offset-2 hover:opacity-75 transition-opacity text-primary"
           >
             Terms of Service
           </Link>
@@ -57,18 +55,18 @@ function SignUp() {
 
       {/* Layout Divider */}
       <div className="flex items-center gap-4 w-full py-2" role="separator">
-        <div className="flex-1 h-0.5 bg-gray-100"></div>
-        <span className="text-gray-400 text-xs font-bold tracking-wider uppercase">
+        <div className="flex-1 h-0.5 bg-gray-lightest"></div>
+        <span className="text-gray-light text-xs font-bold tracking-wider uppercase">
           or
         </span>
-        <div className="flex-1 h-0.5 bg-gray-100"></div>
+        <div className="flex-1 h-0.5 bg-gray-lightest"></div>
       </div>
 
       {/* Email Registration Action Button */}
       <AuthButton
         icon="solar:letter-linear"
         label="Sign up with Email"
-        color="var(--primary)"
+        color="text-primary"
         onClick={() => navigate("/signup-email")}
       />
     </SplitScreenLayout>

@@ -6,10 +6,16 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AuthFormLayout from "../components/layout/AuthFormLayout";
+import { verifyEmailSchema } from "../schemas/authSchemas";
 
-function CodeInput({ onChange }: { onChange: (value: string) => void }) {
+interface CodeInputProps {
+  onChange: (value: string) => void;
+  hasError: boolean;
+}
+
+function CodeInput({ onChange, hasError }: CodeInputProps) {
   const length = 6;
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [values, setValues] = useState(initializeValues);
@@ -20,17 +26,13 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
     });
   }
 
-  {
-    /* Update the values state and call the onChange callback with the concatenated value */
-  }
+  // Update the values state and call the onChange callback with the concatenated value
   function updateValues(nextValues: string[]) {
     setValues(nextValues);
     onChange(nextValues.join(""));
   }
 
-  {
-    /* Handle input change for each digit */
-  }
+  // Handle input change for each digit
   function handleChange(index: number, event: ChangeEvent<HTMLInputElement>) {
     const enteredValue = event.target.value.slice(-1);
 
@@ -47,21 +49,28 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
     }
   }
 
-  {
-    /* Handle backspace key to move focus to the previous input */
-  }
+  // Handle backspace key to move focus to the previous input fluidly
   function handleKeyDown(
     index: number,
     event: KeyboardEvent<HTMLInputElement>,
   ) {
-    if (event.key === "Backspace" && !values[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+    if (event.key === "Backspace") {
+      if (!values[index] && index > 0) {
+        // If current input is empty, focus previous and clear it
+        inputRefs.current[index - 1]?.focus();
+        const nextValues = [...values];
+        nextValues[index - 1] = "";
+        updateValues(nextValues);
+      } else if (values[index]) {
+        // If current input has value, clear it out first
+        const nextValues = [...values];
+        nextValues[index] = "";
+        updateValues(nextValues);
+      }
     }
   }
 
-  {
-    /* Handle paste event to allow pasting the entire OTP code */
-  }
+  // Handle paste event to allow pasting the entire OTP code
   function handlePaste(event: ClipboardEvent<HTMLInputElement>) {
     event.preventDefault();
     const pastedValue = event.clipboardData
@@ -79,16 +88,12 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
     inputRefs.current[Math.min(pastedValue.length, length - 1)]?.focus();
   }
 
-  {
-    /* Set the reference for each input to manage focus */
-  }
+  // Set the reference for each input to manage focus
   function setInputRef(index: number, element: HTMLInputElement | null) {
     inputRefs.current[index] = element;
   }
 
-  {
-    /* Handle input change and key down events for each input */
-  }
+  // Handle input change and key down events for each input
   function handleInputChange(
     index: number,
     event: ChangeEvent<HTMLInputElement>,
@@ -96,9 +101,7 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
     handleChange(index, event);
   }
 
-  {
-    /* Handle key down events for each input */
-  }
+  // Handle key down events for each input
   function handleInputKeyDown(
     index: number,
     event: KeyboardEvent<HTMLInputElement>,
@@ -126,14 +129,18 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
         }}
         onPaste={handlePaste}
         aria-label={`Digit ${index + 1}`}
-        className="h-12 w-12 text-center text-2xl font-bold outline-none transition-colors rounded-xl pin-input"
+        className={`h-12 w-12 text-center text-2xl font-bold outline-none border rounded-xl transition-all duration-200 ${
+          hasError
+            ? "border-error focus:border-error"
+            : "border-transparent focus:border-primary text-gray"
+        }`}
       />
     );
   }
 
   return (
     <div
-      className="flex justify-evenly w-full"
+      className="flex justify-evenly w-full max-w-sm gap-2"
       role="group"
       aria-label="Verification code"
     >
@@ -145,30 +152,63 @@ function CodeInput({ onChange }: { onChange: (value: string) => void }) {
 
 function VerifyEmail() {
   const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const userEmail = "abdulsalamumoru247@gmail.com";
+  const isPasswordReset = location.pathname.startsWith(
+    "/forgot-password/verify-email",
+  );
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (otp.length === 6) {
-      navigate("/create-pin");
+  function handleOtpChange(value: string) {
+    setOtp(value);
+    if (error) {
+      setError("");
     }
   }
 
-  console.log("OTP entered:", otp);
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const result = verifyEmailSchema.safeParse({ otp });
+
+    if (!result.success) {
+      setError(
+        result.error.issues[0]?.message ?? "Enter a valid verification code",
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate(
+        isPasswordReset ? "/forgot-password/reset-password" : "/create-pin",
+      );
+    }, 2000);
+  }
 
   return (
     <AuthFormLayout
-      title="Verify your email"
-      subtitle="Please enter the 6-digit code sent to email abdulsalamumoru247@gmail.com"
+      title="Enter OTP Code"
+      subtitle={`We sent a 6-digit code to ${userEmail}`}
       linkLabel="Didn't Receive OTP? "
       linkTo="#"
       linkName="Resend in 59s"
       buttonLabel="Verify Email"
+      isLoading={isLoading}
       onSubmit={handleSubmit}
     >
-      {/* OTP Input */}
-      <div className="flex justify-center">
-        <CodeInput onChange={setOtp} />
+      {/* OTP Input Container */}
+      <div className="flex flex-col items-center justify-center w-full">
+        <CodeInput onChange={handleOtpChange} hasError={Boolean(error)} />
+        {error && (
+          <p
+            className="mt-4 text-center text-sm font-medium text-error"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
       </div>
     </AuthFormLayout>
   );
