@@ -40,7 +40,7 @@ function CreatePin() {
 
           navigate("/dashboard");
         }
-      }, 2000); // 2 second delay
+      }, 300); // 0.3 second delay
     }
   }
   function handleBackspace() {
@@ -72,24 +72,24 @@ function CreatePin() {
               {[0, 1, 2, 3].map((index) => (
                 <div
                   key={index}
-                  className={`h-3.5 w-3.5 rounded-full transition-colors sm:h-4 sm:w-4 ${
+                  className={`h-3.5 w-3.5 rounded-full transition-colors sm:h-4 sm:w-4 border ${
                     index < pin.length ? "bg-primary" : "bg-gray-lighter"
-                  }`}
+                  } ${error ? "border-error" : "border-transparent"}`}
                 ></div>
               ))}
             </div>
 
+            {error && (
+              <p className="mt-1 text-center text-sm text-error" role="alert">
+                {error}
+              </p>
+            )}
             {/* Helper Text */}
             <p className="text-center text-sm text-gray-semi-dark">
               {step === "create"
                 ? "Enter a PIN you can remember"
                 : "Confirm your entered numbers"}
             </p>
-            {error && (
-              <p className="mt-2 text-center text-sm text-error" role="alert">
-                {error}
-              </p>
-            )}
           </div>
 
           {/* Numeric Keypad Centered */}
