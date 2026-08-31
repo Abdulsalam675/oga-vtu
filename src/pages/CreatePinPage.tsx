@@ -132,7 +132,7 @@ function CreatePin() {
                 icon="solar:backspace-linear"
                 width={24}
                 height={24}
-                className="text-gray-light"
+                className="text-gray-normal"
               />
             </button>
           </div>
