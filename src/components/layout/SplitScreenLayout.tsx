@@ -24,36 +24,35 @@ function SplitScreenLayout({
   footer,
 }: SplitScreenLayoutProps) {
   return (
-    <div className="min-h-screen w-full flex items-stretch select-none text-gray-dark antialiased overflow-hidden">
-      {/* LEFT CONTAINER*/}
-      <div className="hidden md:flex md:w-[40%] flex-col justify-between p-14 sticky top-0 h-screen text-white overflow-hidden antialiased relative bg-gradient-to-b from-primary via-[#059669] to-[#064e3b]">
-        <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] rounded-full bg-white/[0.08] blur-[100px] pointer-events-none animate-pulse duration-[6000ms]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-emerald-400/10 blur-[90px] pointer-events-none" />
+    <div className="min-h-dvh w-full flex items-stretch select-none text-gray-dark antialiased">
+      {/* LEFT PANEL — desktop only */}
+      <div className="relative hidden md:flex md:w-[40%] h-dvh sticky top-0 flex-col justify-between overflow-hidden p-14 text-white bg-gradient-to-b from-primary via-[#059669] to-[#064e3b]">
+        <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[450px] w-[450px] rounded-full bg-white/[0.08] blur-[100px]" />
+        <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[350px] w-[350px] rounded-full bg-emerald-400/10 blur-[90px]" />
 
-        {/* Top Header (LOGO)*/}
         <header className="relative z-20 flex items-center gap-3">
-          <span className="text-2xl font-black text-white tracking-tight block drop-shadow-sm">
+          <span className="block text-2xl font-black tracking-tight text-white drop-shadow-sm">
             Oga
           </span>
         </header>
 
-        <div className="flex-1 flex flex-col justify-center items-start relative z-20 max-w-xs pl-2">
-          <span className="text-[10px] font-bold tracking-[0.25em] text-emerald-200/60 uppercase mb-2 block">
+        <div className="relative z-20 flex max-w-xs flex-1 flex-col items-start justify-center pl-2">
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-200/60">
             VIRTUAL GATEWAY
           </span>
 
-          <div className="h-[2px] w-6 bg-white/50 rounded-full mb-4 shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+          <div className="mb-4 h-[2px] w-6 rounded-full bg-white/50 shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
 
-          <h2 className="text-xl font-bold text-gray-dark tracking-tight leading-snug drop-shadow-sm">
+          <h2 className="text-xl font-bold leading-snug tracking-tight text-white drop-shadow-sm">
             Automated Utility & Transaction Network.
           </h2>
 
-          <p className="text-xs text-emerald-50/70 font-light mt-3 leading-relaxed">
+          <p className="mt-3 text-xs font-light leading-relaxed text-emerald-47/70">
             Instant airtime top-ups, automated data delivery, and zero-delay
             utility clearing modules.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 opacity-60 text-[10px] font-semibold tracking-wider">
+          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-semibold tracking-wider opacity-60">
             <span className="flex items-center gap-1">✦ 99.9% Uptime</span>
             <span className="flex items-center gap-1">
               ✦ End-to-End Encryption
@@ -61,52 +60,48 @@ function SplitScreenLayout({
           </div>
         </div>
 
-        <footer className="relative z-20 border-t border-white/10 pt-4 flex items-center justify-between">
-          <p className="text-[10px] text-emerald-100/40 font-bold tracking-[0.15em] uppercase">
+        <footer className="relative z-20 flex items-center justify-between border-t border-white/10 pt-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-100/40">
             &copy; {new Date().getFullYear()} Oga Inc.
           </p>
-          <span className="text-[9px] font-bold tracking-widest text-emerald-200/30 uppercase">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-200/30">
             SECURE ENVIRONMENT
           </span>
         </footer>
       </div>
 
-      {/* RIGHT CONTAINER */}
-      <section className="w-full md:w-[60%] flex flex-col justify-start md:justify-center items-center pt-6 md:pt-0 p-4 sm:p-16 bg-white relative z-30 shadow-2xl">
+      {/* RIGHT PANEL */}
+      <section className="relative z-30 flex w-full min-h-dvh flex-col items-center justify-start bg-white p-4 pt-6 shadow-2xl sm:p-10 md:w-[60%] md:justify-center md:pt-0 md:p-16">
         <div className="w-full max-w-md">
-          {/* Mobile Brand Asset */}
-          <div className="mb-10 text-left md:hidden">
-            <span className="text-2xl font-bold tracking-wide inline-block text-primary">
+          {/* Mobile logo */}
+          <div className="mb-8 text-left md:hidden">
+            <span className="inline-block text-2xl font-bold tracking-wide text-primary">
               Oga
             </span>
           </div>
 
-          {/* Title and Subtitle */}
-          <div className="space-y-2 mb-10 text-left">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-dark">
+          <div className="mb-8 space-y-2 text-left">
+            <h1 className="text-2xl font-extrabold tracking-tight text-gray-dark md:text-3xl">
               {right.title}
             </h1>
-            <p className="text-base text-gray-semi-dark leading-relaxed">
+            <p className="text-base leading-relaxed text-gray-semi-dark">
               {right.subtitle}
             </p>
           </div>
 
-          {/* Form passed down as component children */}
           <div className="space-y-4">{children}</div>
 
-          {/* Navigation rerouting links */}
-          <p className="mt-8 text-sm text-gray-semi-dark text-center font-medium">
+          <p className="mt-8 text-center text-sm font-medium text-gray-semi-dark">
             {link.label}{" "}
             <Link
               to={link.to}
-              className="underline underline-offset-3 hover:opacity-75 transition-opacity text-primary"
+              className="text-primary underline underline-offset-3 transition-opacity hover:opacity-75"
             >
               {link.linkName}
             </Link>
           </p>
 
-          {/* Supplemental Footer */}
-          {footer && <div>{footer}</div>}
+          {footer && <div className="mt-6">{footer}</div>}
         </div>
       </section>
     </div>

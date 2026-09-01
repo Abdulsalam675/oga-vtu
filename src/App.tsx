@@ -9,6 +9,7 @@ import Signup from "./pages/SignupPage";
 import Signin from "./pages/SigninPage";
 import CreatePin from "./pages/CreatePinPage";
 import ResetPassword from "./pages/RestPasswordPage";
+import Dashboard from "./pages/DashboardPage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ export default function App() {
         />
 
         <Route path="/create-pin" element={<CreatePin />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

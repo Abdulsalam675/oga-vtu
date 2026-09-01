@@ -7,7 +7,7 @@
   --primary-dark: #04aa76;
   --error: #d32f2f;
 
-  /* Gray Scale - Semantic Names */
+  /* Gray Scale */
   --gray-dark: #1b1b1b;
   --gray-semi-dark: #555555;
   --gray-normal: #888888;
@@ -86,18 +86,7 @@ span {
   flex-direction: column;
 }
 
-/* Component utility classes */
-.pin-input {
-  background-color: var(--gray-extra-light);
-  color: var(--primary);
-  border: 1px solid var(--gray-lighter);
-}
-
-.pin-input:focus {
-  border-color: var(--primary);
-  outline: none;
-}
-
+/* Auth / shared UI */
 .btn-primary {
   background-color: var(--primary);
   color: var(--white);
@@ -129,4 +118,40 @@ span {
 
 .muted-text {
   color: var(--gray-light);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.shake {
+  animation: shake 0.45s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in;
 }
