@@ -11,9 +11,9 @@
   --gray-dark: #1b1b1b;
   --gray-semi-dark: #555555;
   --gray-normal: #888888;
-  --gray-light: #aaaaaa;
+  --gray-light: #bbbbbb;
   --gray-lighter: #e0e0e0;
-  --gray-lightest: #f0f0f0;
+  --gray-lightest: #f3f3f3;
   --gray-extra-light: #f9f9f9;
   --white: #ffffff;
 
@@ -40,7 +40,7 @@
   --color-gray-normal: #888888;
   --color-gray-light: #aaaaaa;
   --color-gray-lighter: #e0e0e0;
-  --color-gray-lightest: #f0f0f0;
+  --color-gray-lightest: #f3f3f3;
   --color-gray-extra-light: #f9f9f9;
   --color-white: #ffffff;
 }

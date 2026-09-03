@@ -9,7 +9,9 @@ import Signup from "./pages/SignupPage";
 import Signin from "./pages/SigninPage";
 import CreatePin from "./pages/CreatePinPage";
 import ResetPassword from "./pages/RestPasswordPage";
-import Dashboard from "./pages/DashboardPage";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -26,9 +28,25 @@ export default function App() {
           path="/forgot-password/reset-password"
           element={<ResetPassword />}
         />
-
         <Route path="/create-pin" element={<CreatePin />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        import HomePage from "../pages/dashboard/HomePage";
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<HomePage />} />
+          <Route
+            path="services"
+            element={<div>Services page coming next</div>}
+          />
+
+          <Route
+            path="profile"
+            element={
+              <ProfilePage
+                profileComplete={false}
+                email="abdulsalamumoru247@gmail.com"
+              />
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

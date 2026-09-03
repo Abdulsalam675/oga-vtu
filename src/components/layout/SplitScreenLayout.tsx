@@ -2,6 +2,7 @@
 import { memo } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import Logo from "../Logo";
 
 interface SplitScreenLayoutProps {
   children: ReactNode;
@@ -31,9 +32,7 @@ function SplitScreenLayout({
         <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[350px] w-[350px] rounded-full bg-emerald-400/10 blur-[90px]" />
 
         <header className="relative z-20 flex items-center gap-3">
-          <span className="block text-2xl font-black tracking-tight text-white drop-shadow-sm">
-            Oga
-          </span>
+          <Logo color="white" size="md" className="font-black drop-shadow-sm" />
         </header>
 
         <div className="relative z-20 flex max-w-xs flex-1 flex-col items-start justify-center pl-2">
@@ -75,9 +74,7 @@ function SplitScreenLayout({
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="mb-8 text-left md:hidden">
-            <span className="inline-block text-2xl font-bold tracking-wide text-primary">
-              Oga
-            </span>
+            <Logo color="primary" size="md" />
           </div>
 
           <div className="mb-8 space-y-2 text-left">

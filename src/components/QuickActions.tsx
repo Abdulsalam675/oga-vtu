@@ -1,67 +1,80 @@
+// src/components/dashboard/QuickActions.tsx
+import { memo } from "react";
 import { Icon } from "@iconify/react";
 
-interface ActionItem {
-  icon: string;
+interface QuickAction {
+  id: string;
   label: string;
-  colorClass: string;
+  icon: string;
 }
 
-const actions: ActionItem[] = [
+interface QuickActionsProps {
+  onActionClick?: (id: string) => void;
+}
+
+const actions: QuickAction[] = [
   {
-    icon: "solar:phone-calling-outline",
+    id: "airtime",
     label: "Airtime",
-    colorClass: "text-blue-500 bg-blue-50",
+    icon: "solar:phone-calling-linear",
   },
   {
-    icon: "solar:globus-outline",
-    label: "Data Bundle",
-    colorClass: "text-emerald-500 bg-emerald-50",
+    id: "data",
+    label: "Data",
+    icon: "solar:smartphone-linear",
   },
   {
-    icon: "solar:bomb-emoji-outline",
-    label: "Cable TV",
-    colorClass: "text-purple-500 bg-purple-50",
-  },
-  {
-    icon: "solar:plug-charge-outline",
+    id: "electricity",
     label: "Electricity",
-    colorClass: "text-amber-500 bg-amber-50",
+    icon: "solar:lightbulb-bolt-linear",
   },
   {
-    icon: "solar:ticket-outline",
+    id: "tv",
+    label: "Cable TV",
+    icon: "solar:tv-linear",
+  },
+  {
+    id: "exam",
     label: "Exam Pin",
-    colorClass: "text-rose-500 bg-rose-50",
+    icon: "solar:document-linear",
   },
   {
-    icon: "solar:chat-square-line-outline",
-    label: "Bulk SMS",
-    colorClass: "text-indigo-500 bg-indigo-50",
+    id: "more",
+    label: "More",
+    icon: "solar:widget-2-linear",
   },
 ];
 
-export default function QuickActions() {
+function QuickActions({ onActionClick }: QuickActionsProps) {
   return (
-    <div className="space-y-3">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-gray-normal px-1">
-        Quick Services
-      </h3>
-      <div className="grid grid-cols-3 gap-3">
-        {actions.map((item, index) => (
-          <button
-            key={index}
-            className="bg-white p-4 rounded-2xl border border-gray-lighter flex flex-col items-center justify-center text-center gap-2.5 transition-all hover:border-primary/20 active:scale-[0.97]"
-          >
-            <div
-              className={`h-12 w-12 rounded-full ${item.colorClass} flex items-center justify-center`}
-            >
-              <Icon icon={item.icon} width={24} height={24} />
-            </div>
-            <span className="text-xs font-bold text-gray-dark tracking-tight">
-              {item.label}
-            </span>
-          </button>
-        ))}
+    <section className="w-full">
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-xs font-medium text-gray-dark">Services</h3>
       </div>
-    </div>
+
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+        {actions.map(function (action) {
+          return (
+            <button
+              key={action.id}
+              type="button"
+              onClick={function () {
+                if (onActionClick) onActionClick(action.id);
+              }}
+              className="flex cursor-pointer flex-col items-center gap-1 rounded-2xl bg-white p-3 transition-opacity hover:opacity-70 active:scale-95"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl">
+                <Icon icon={action.icon} className="h-6 w-6 text-gray-dark" />
+              </div>
+              <span className="text-[10px] font-semibold text-gray-dark">
+                {action.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
+
+export default memo(QuickActions);
