@@ -28,8 +28,8 @@ function BalanceCard({ balance = 0, onFundClick }: BalanceCardProps) {
             <p className="text-sm font-medium text-white/83">Wallet balance</p>
             <button
               type="button"
-              onClick={function () {
-                setIsVisible(function (prev) {
+              onClick={() => {
+                setIsVisible((prev) => {
                   return !prev;
                 });
               }}

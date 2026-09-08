@@ -87,7 +87,7 @@ function ResetPassword() {
         placeholder="Create a new password"
         value={formData.newPassword}
         onChange={handleChange}
-        isPassword={true}
+        isPassword
       />
 
       {/* Confirm Password */}
@@ -101,7 +101,7 @@ function ResetPassword() {
         placeholder="Confirm your password"
         value={formData.confirmPassword}
         onChange={handleChange}
-        isPassword={true}
+        isPassword
       />
     </AuthFormLayout>
   );

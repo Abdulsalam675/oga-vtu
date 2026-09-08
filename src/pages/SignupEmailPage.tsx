@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AuthFormLayout from "../components/layout/AuthFormLayout";
 import AuthInput from "../components/AuthInput";
 import { signupEmailSchema } from "../schemas/authSchemas";
+import { saveUserData } from "../utilities/userStorage";
 
 function SignUpEmail() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -50,6 +51,13 @@ function SignUpEmail() {
     }
 
     setIsLoading(true);
+    saveUserData({
+      email: formData.email,
+      password: formData.password,
+      profileComplete: false,
+      emailVerified: false,
+      isLoggedIn: false,
+    });
     setTimeout(() => {
       navigate("/verify-email");
     }, 2000); // 2 second delay
@@ -87,7 +95,7 @@ function SignUpEmail() {
         type="password"
         name="password"
         onBlur={handleBlur}
-        isPassword={true}
+        isPassword
         value={formData.password}
         onChange={handleChange}
         error={errors.password}

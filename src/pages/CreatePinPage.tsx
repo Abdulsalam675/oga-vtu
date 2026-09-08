@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { createPinSchema } from "../schemas/authSchemas";
+import { updateUserData } from "../utilities/userStorage";
 
 type FlowStep = "create" | "confirm";
 
@@ -18,14 +19,14 @@ function CreatePin() {
 
   function handleNumberClick(number: string) {
     if (pin.length >= 4) return;
-    setPin(function (prev) {
+    setPin((prev) => {
       return prev + number;
     });
     setError("");
   }
 
   function handleBackspace() {
-    setPin(function (prev) {
+    setPin((prev) => {
       return prev.slice(0, -1);
     });
     setError("");
@@ -51,7 +52,7 @@ function CreatePin() {
     setError(errorMessage); // ← From Zod
     setIsShaking(true);
 
-    window.setTimeout(function () {
+    window.setTimeout(() => {
       setIsShaking(false);
       setPin("");
     }, 500);
@@ -77,9 +78,11 @@ function CreatePin() {
     if (!result.success) {
       const errorMessage =
         result.error.issues[0]?.message || "PINs do not match";
-      triggerMismatchFeedback(errorMessage); // ← Pass error from Zod
+      triggerMismatchFeedback(errorMessage);
       return;
     }
+
+    updateUserData({ pin: pin, isLoggedIn: true });
 
     navigate("/dashboard");
   }
@@ -141,12 +144,12 @@ function CreatePin() {
         <div className="flex-1" />
 
         <div className="mx-auto grid w-full max-w-[330px] shrink-0 grid-cols-3 gap-x-5 gap-y-4 px-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (num) {
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
             return (
               <button
                 key={num}
                 type="button"
-                onClick={function () {
+                onClick={() => {
                   handleNumberClick(num.toString());
                 }}
                 aria-label={"Enter " + num}
@@ -181,7 +184,7 @@ function CreatePin() {
 
           <button
             type="button"
-            onClick={function () {
+            onClick={() => {
               handleNumberClick("0");
             }}
             aria-label="Enter 0"

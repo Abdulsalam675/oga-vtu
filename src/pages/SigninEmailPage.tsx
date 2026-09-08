@@ -1,12 +1,15 @@
 import { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 import AuthFormLayout from "../components/layout/AuthFormLayout";
 import AuthInput from "../components/AuthInput";
 import { signinEmailSchema } from "../schemas/authSchemas";
+import { getUserData, updateUserData } from "../utilities/userStorage";
 
 function SignInEmail() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -15,14 +18,18 @@ function SignInEmail() {
 
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
+    setGeneralError("");
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+    if (value.length === 0) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
 
     const fieldSchema =
       signinEmailSchema.shape[name as keyof typeof signinEmailSchema.shape];
-
     const result = fieldSchema.safeParse(value);
 
     if (!result.success) {
@@ -35,6 +42,7 @@ function SignInEmail() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setGeneralError("");
 
     const result = signinEmailSchema.safeParse(formData);
     if (!result.success) {
@@ -47,9 +55,23 @@ function SignInEmail() {
     }
 
     setIsLoading(true);
+
     setTimeout(() => {
-      navigate("/dashboard");
-    }, 2000);  // 2 second delay
+      const storedUser = getUserData();
+
+      if (
+        storedUser &&
+        storedUser.email === formData.email &&
+        storedUser.password === formData.password
+      ) {
+        updateUserData({ isLoggedIn: true });
+        navigate("/dashboard");
+      } else {
+        setGeneralError("Invalid Email or Password");
+      }
+
+      setIsLoading(false);
+    }, 1500);
   }
 
   return (
@@ -63,6 +85,14 @@ function SignInEmail() {
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >
+      {/* Error Banner */}
+      {generalError && (
+        <div className="mb-4 flex items-center gap-3 rounded-xl bg-error/10 p-3.5">
+          <Icon icon="solar:danger-bold" className="h-5 w-5 text-error" />
+          <p className="text-sm font-medium text-error">{generalError}</p>
+        </div>
+      )}
+
       {/* Email Input Field */}
       <AuthInput
         label="Email address"
@@ -84,7 +114,7 @@ function SignInEmail() {
         type="password"
         name="password"
         error={errors.password}
-        isPassword={true}
+        isPassword
         onBlur={handleBlur}
         value={formData.password}
         onChange={handleChange}

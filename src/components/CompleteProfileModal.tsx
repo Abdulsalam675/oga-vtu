@@ -1,90 +1,172 @@
-import { Icon } from "@iconify/react";
+// src/components/CompleteProfileModal.tsx
+import { memo, useState } from "react";
+import Modal from "../components/Modal";
+import AuthInput from "../components/AuthInput";
+import Button from "../components/buttons/Button";
+import { fullNameSchema, phoneNumberSchema } from "../schemas/authSchemas";
+import { updateUserData } from "../utilities/userStorage";
+import { capitalizeWords } from "../utilities/capitalizeWords";
 
-export default function CompleteProfileModal() {
+interface CompleteProfileModalProps {
+  open: boolean;
+  onClose?: () => void;
+  onComplete?: (data: { fullName: string; phone: string }) => void;
+}
+
+function CompleteProfileModal({
+  open,
+  onClose,
+  onComplete,
+}: CompleteProfileModalProps) {
+  const [formData, setFormData] = useState({ fullName: "", phone: "" });
+  const [errors, setErrors] = useState({ fullName: "", phone: "" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  }
+
+  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    if (value.length === 0) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
+
+    // Validate individual field
+    if (name === "fullName") {
+      const result = fullNameSchema.safeParse({ fullName: value });
+      if (!result.success) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: result.error.issues[0]?.message || "Invalid input",
+        }));
+      }
+    } else if (name === "phone") {
+      const result = phoneNumberSchema.safeParse({ phone: value });
+      if (!result.success) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: result.error.issues[0]?.message || "Invalid input",
+        }));
+      }
+    }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setErrors({ fullName: "", phone: "" });
+
+    // Validate full name
+    const fullNameResult = fullNameSchema.safeParse({
+      fullName: formData.fullName,
+    });
+    if (!fullNameResult.success) {
+      const fieldErrors = fullNameResult.error.flatten().fieldErrors;
+      setErrors((prev) => ({
+        ...prev,
+        fullName: fieldErrors.fullName?.[0] ?? "",
+      }));
+      return;
+    }
+
+    // Validate phone
+    const phoneResult = phoneNumberSchema.safeParse({
+      phone: formData.phone,
+    });
+    if (!phoneResult.success) {
+      const fieldErrors = phoneResult.error.flatten().fieldErrors;
+      setErrors((prev) => ({
+        ...prev,
+        phone: fieldErrors.phone?.[0] ?? "",
+      }));
+      return;
+    }
+
+    // All validations passed
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const capitalizedName = capitalizeWords(formData.fullName);
+
+      if (onComplete) {
+        onComplete({
+          fullName: capitalizedName,
+          phone: formData.phone.trim(),
+        });
+      }
+
+      updateUserData({
+        fullName: capitalizedName,
+        phoneNumber: formData.phone.trim(),
+        profileComplete: true,
+      });
+
+      setIsLoading(false);
+    }, 1500);
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-dark/60 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md p-6 bg-white shadow-2xl rounded-2xl border border-gray-lighter space-y-6">
-        <div>
-          <h2 className="text-xl font-bold text-gray-dark tracking-tight">
-            Complete Your Profile
-          </h2>
-          <p className="mt-1 text-sm text-gray-normal leading-relaxed">
-            Provide your details below to activate your electronic wallet
-            account and unlock your dashboard.
-          </p>
-        </div>
-
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          {/* Custom Input Wrapper 1: Username */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-semi-dark uppercase tracking-wider">
-              Username
-            </label>
-            <div className="flex items-center gap-3 border border-gray-lighter bg-gray-extra-light px-4 rounded-full">
-              <Icon
-                icon="solar:user-outline"
-                width={20}
-                height={20}
-                className="text-gray-light"
-              />
-              <input
-                type="text"
-                placeholder="e.g., as_dev"
-                className="bg-transparent w-full focus:outline-none text-sm font-medium py-3.5 placeholder-gray-light text-gray-dark"
-              />
-            </div>
-          </div>
-
-          {/* Custom Input Wrapper 2: Full Name */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-semi-dark uppercase tracking-wider">
-              Full Name
-            </label>
-            <div className="flex items-center gap-3 border border-gray-lighter bg-gray-extra-light px-4 rounded-full">
-              <Icon
-                icon="solar:text-field-outline"
-                width={20}
-                height={20}
-                className="text-gray-light"
-              />
-              <input
-                type="text"
-                placeholder="Abdulsalam Umoru"
-                className="bg-transparent w-full focus:outline-none text-sm font-medium py-3.5 placeholder-gray-light text-gray-dark"
-              />
-            </div>
-          </div>
-
-          {/* Custom Input Wrapper 3: Phone Number */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-semi-dark uppercase tracking-wider">
-              Phone Number
-            </label>
-            <div className="flex items-center gap-3 border border-gray-lighter bg-gray-extra-light px-4 rounded-full">
-              <Icon
-                icon="solar:phone-outline"
-                width={20}
-                height={20}
-                className="text-gray-light"
-              />
-              <input
-                type="tel"
-                inputMode="numeric"
-                placeholder="e.g., 08012345678"
-                className="bg-transparent w-full focus:outline-none text-sm font-medium py-3.5 placeholder-gray-light text-gray-dark"
-              />
-            </div>
-          </div>
-
-          {/* Save Action Trigger Button */}
-          <button
-            type="submit"
-            className="w-full h-12 mt-2 font-bold text-white bg-primary rounded-full hover:bg-primary-dark transition-colors active:scale-[0.99]"
-          >
-            Save & Launch Dashboard
-          </button>
-        </form>
+    <Modal open={open} onClose={onClose}>
+      <div className="mb-6">
+        <h2 className="text-xl font-extrabold tracking-tight text-gray-dark">
+          Complete your profile
+        </h2>
+        <p className="mt-1 text-sm leading-relaxed text-gray-light">
+          Add your name and phone number to start buying airtime, data, and
+          bills.
+        </p>
       </div>
-    </div>
+
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <AuthInput
+          label="Full name"
+          icon="solar:user-linear"
+          name="fullName"
+          type="text"
+          placeholder="Abdulsalam Umoru"
+          value={formData.fullName}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.fullName}
+        />
+
+        <AuthInput
+          label="Phone number"
+          icon="solar:phone-linear"
+          name="phone"
+          type="tel"
+          placeholder="0801 234 5678"
+          value={formData.phone}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.phone}
+        />
+
+        <Button
+          label="Save"
+          htmlType="submit"
+          loading={isLoading}
+          disabled={
+            !formData.fullName.trim() || !formData.phone.trim() || isLoading
+          }
+        />
+
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full cursor-pointer py-2 text-center text-sm font-semibold text-gray-light"
+          >
+            Do this later
+          </button>
+        )}
+      </form>
+    </Modal>
   );
 }
+
+export default memo(CompleteProfileModal);

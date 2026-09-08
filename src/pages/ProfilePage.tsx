@@ -1,166 +1,176 @@
 // src/pages/dashboard/ProfilePage.tsx
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { type UserData } from "../utilities/userStorage";
+import Avatar from "../components/Avatar";
+import CompleteProfileModal from "../components/CompleteProfileModal";
+import { updateUserData } from "../utilities/userStorage";
 
-interface ProfilePageProps {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  profileComplete?: boolean;
-}
+type DashboardContext = {
+  user: UserData | null;
+  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
+};
 
-function ProfilePage({
-  firstName,
-  lastName,
-  email = "user@email.com",
-  phone,
-  profileComplete = false,
-}: ProfilePageProps) {
+function ProfilePage() {
   const navigate = useNavigate();
+  const { user, setUser } = useOutletContext<DashboardContext>();
+  const [showCompleteProfile, setShowCompleteProfile] = useState(false);
 
-  const displayName =
-    profileComplete && firstName
-      ? `${firstName}${lastName ? ` ${lastName}` : ""}`
-      : "Complete your profile";
-
-  const initials =
-    profileComplete && firstName ? firstName.charAt(0).toUpperCase() : null;
-
-  function handleCompleteProfile() {
-    // later: open modal or go to /complete-profile
-  }
-
-  function handleLogout() {
-    // later: clear auth and redirect
-    navigate("/signin");
-  }
+  const displayName = user?.fullName?.trim() || "Complete your profile";
+  const phone = user?.phoneNumber || "—";
+  const fullName = user?.fullName;
+  const profilePicture = user?.profilePicture;
+  const profileComplete = user?.profileComplete ?? false;
 
   const menuItems = [
     {
       id: "personal",
-      label: "Personal details",
-      subtitle: profileComplete
-        ? "Name, phone number"
-        : "Add your name and phone",
+      label: "Personal information",
+      subtitle: "Name, phone, email",
       icon: "solar:user-linear",
-      onClick: handleCompleteProfile,
     },
     {
       id: "security",
       label: "Security",
-      subtitle: "PIN, password",
+      subtitle: "Password, PIN",
       icon: "solar:shield-keyhole-linear",
-      onClick: function () {},
     },
     {
       id: "notifications",
       label: "Notifications",
-      subtitle: "SMS and push alerts",
+      subtitle: "Alerts and preferences",
       icon: "solar:bell-linear",
-      onClick: function () {},
     },
     {
       id: "support",
       label: "Help & support",
       subtitle: "FAQs and contact us",
       icon: "solar:help-linear",
-      onClick: function () {},
     },
   ];
 
+  function handleMenuItemClick(id: string) {
+    if (!profileComplete) {
+      setShowCompleteProfile(true);
+      return;
+    }
+
+    switch (id) {
+      case "personal":
+        navigate("/dashboard/profile/personal");
+        break;
+      case "security":
+        navigate("/dashboard/profile/security");
+        break;
+      case "notifications":
+        navigate("/dashboard/profile/notifications");
+        break;
+      case "support":
+        navigate("/dashboard/profile/support");
+        break;
+      default:
+        break;
+    }
+  }
+
+  function handleProfileComplete(data: { fullName: string; phone: string }) {
+    const next = updateUserData({
+      fullName: data.fullName,
+      phoneNumber: data.phone,
+      profileComplete: true,
+    });
+
+    if (next) {
+      setUser(next);
+    }
+    setShowCompleteProfile(false);
+  }
+
+  function handleLogout() {
+    updateUserData({ isLoggedIn: false });
+    setUser(null);
+    navigate("/signin");
+  }
+
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-5">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-extrabold tracking-tight text-gray-dark md:text-2xl">
+    <div className="mx-auto w-full max-w-3xl space-y-6">
+      <div className="mb-8">
+        <h1 className="text-xl font-extrabold tracking-tight text-gray-dark text-center">
           Profile
         </h1>
-        <p className="mt-1 text-sm text-gray-light">
-          Manage your account and security
-        </p>
       </div>
 
-      {/* Identity card */}
-      <div className="rounded-2xl bg-white p-5">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-extrabold text-white">
-            {initials ? (
-              initials
-            ) : (
-              <Icon icon="solar:user-linear" className="h-6 w-6" />
-            )}
+      {/* User Card */}
+      <section className="rounded-2xl bg-white p-5">
+        <div className="flex items-center gap-2.5">
+          <div
+            onClick={() => handleMenuItemClick("personal")}
+            className="cursor-pointer"
+          >
+            <Avatar size="lg" name={fullName} profilePicture={profilePicture} />
           </div>
-
           <div className="min-w-0 flex-1">
-            <p className="text-base font-extrabold text-gray-dark">
+            <h2 className="truncate text-lg font-extrabold text-gray-dark">
               {displayName}
-            </p>
-            <p className="mt-0.5 text-sm text-gray-light">{email}</p>
-            {phone && <p className="mt-0.5 text-sm text-gray-light">{phone}</p>}
+            </h2>
+            <p className="mt-1 truncate text-sm text-gray-light">{phone}</p>
           </div>
         </div>
+      </section>
 
-        {!profileComplete && (
-          <button
-            type="button"
-            onClick={handleCompleteProfile}
-            className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            <Icon icon="solar:user-plus-linear" className="h-4 w-4" />
-            Complete profile
-          </button>
-        )}
-      </div>
+      {/* Account Menu */}
+      <section>
+        <h3 className="mb-3 text-sm font-semibold text-gray-dark">Account</h3>
 
-      {/* Menu */}
-      <ul className="overflow-hidden rounded-2xl bg-white">
-        {menuItems.map(function (item, index) {
-          const isLast = index === menuItems.length - 1;
+        <ul className="space-y-2">
+          {menuItems.map(function (item) {
+            return (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  onClick={() => handleMenuItemClick(item.id)}
+                  className="flex w-full items-center gap-3.5 rounded-xl bg-white px-4 py-4 text-left transition-colors active:bg-gray-lightest"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                    <Icon icon={item.icon} className="h-5 w-5 text-primary" />
+                  </div>
 
-          return (
-            <li key={item.id}>
-              <button
-                type="button"
-                onClick={item.onClick}
-                className={
-                  "flex w-full cursor-pointer items-center gap-3 p-4 text-left transition-colors active:bg-gray-extra-light " +
-                  (!isLast ? "border-b border-gray-lightest" : "")
-                }
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-extra-light">
-                  <Icon icon={item.icon} className="h-5 w-5 text-gray-dark" />
-                </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-dark">
+                      {item.label}
+                    </p>
+                    <p className="mt-0.5 text-xs text-gray-light">
+                      {item.subtitle}
+                    </p>
+                  </div>
 
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-gray-dark">
-                    {item.label}
-                  </p>
-                  <p className="mt-0.5 text-xs text-gray-light">
-                    {item.subtitle}
-                  </p>
-                </div>
+                  <Icon
+                    icon="solar:alt-arrow-right-linear"
+                    className="h-5 w-5 shrink-0 text-gray-light"
+                  />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
-                <Icon
-                  icon="solar:alt-arrow-right-linear"
-                  className="h-5 w-5 shrink-0 text-gray-light"
-                />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      {/* Logout */}
+      {/* Logout Button */}
       <button
         type="button"
         onClick={handleLogout}
-        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-white px-4 py-4 text-sm font-semibold text-error transition-colors active:bg-gray-extra-light"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-4 text-sm font-semibold text-error transition-colors active:bg-gray-lightest"
       >
-        <Icon icon="solar:logout-2-linear" className="h-5 w-5" />
         Log out
       </button>
+
+      {/* Complete Profile Modal */}
+      <CompleteProfileModal
+        open={showCompleteProfile}
+        onClose={() => setShowCompleteProfile(false)}
+        onComplete={handleProfileComplete}
+      />
     </div>
   );
 }

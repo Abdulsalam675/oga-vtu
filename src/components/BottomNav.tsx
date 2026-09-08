@@ -41,7 +41,7 @@ function BottomNav() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="flex h-16 items-stretch">
-        {navItems.map(function (item) {
+        {navItems.map((item) => {
           return (
             <li key={item.to} className="flex-1">
               <NavLink
@@ -49,7 +49,7 @@ function BottomNav() {
                 end={item.end}
                 className="flex h-full w-full flex-col items-center justify-center gap-0.5"
               >
-                {function ({ isActive }) {
+                {({ isActive }) => {
                   return (
                     <>
                       <Icon

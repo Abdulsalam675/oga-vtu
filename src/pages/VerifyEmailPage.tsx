@@ -10,7 +10,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthFormLayout from "../components/layout/AuthFormLayout";
 import { verifyEmailSchema } from "../schemas/authSchemas";
-
+import { updateUserData } from "../utilities/userStorage";
 interface CodeInputProps {
   onChange: (value: string) => void;
   hasError: boolean;
@@ -122,7 +122,7 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
         }}
         onPaste={handlePaste}
         aria-label={`Digit ${index + 1}`}
-        className={`h-12 w-12 text-center text-2xl font-bold outline-none border rounded-xl transition-all duration-200 ${
+        className={`h-12 w-12 text-center bg-gray-extra- text-2xl font-bold outline-none border rounded-xl transition-all duration-200 ${
           hasError
             ? "border-error focus:border-error"
             : "border-transparent focus:border-primary text-gray-dark"
@@ -185,7 +185,7 @@ function VerifyEmail() {
     setError(errorMessage);
     setIsShaking(true);
 
-    window.setTimeout(function () {
+    window.setTimeout(() => {
       setIsShaking(false);
       setOtp("");
     }, 500);
@@ -203,6 +203,8 @@ function VerifyEmail() {
 
     setIsLoading(true);
     setTimeout(() => {
+      updateUserData({ emailVerified: true });
+
       navigate(
         isPasswordReset ? "/forgot-password/reset-password" : "/create-pin",
       );

@@ -1,45 +1,57 @@
 // src/components/dashboard/Header.tsx
 import { memo } from "react";
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
+import Avatar from "./Avatar";
 
 interface HeaderProps {
   firstName?: string;
+  profilePicture?: string;
   profileComplete?: boolean;
   notificationCount?: number;
   onNotificationClick?: () => void;
-  onProfileClick?: () => void;
+  onProfileIncomplete?: () => void;
 }
 
 function Header({
   firstName,
+  profilePicture,
   profileComplete = false,
   notificationCount = 0,
   onNotificationClick,
-  onProfileClick,
+  onProfileIncomplete,
 }: HeaderProps) {
-  const displayName = profileComplete && firstName ? firstName : "there";
-  const initials =
-    profileComplete && firstName ? firstName.charAt(0).toUpperCase() : "";
+  const displayName = firstName || "there";
+  const navigate = useNavigate();
+
+  function handleAvatarClick() {
+    if (!profileComplete) {
+      onProfileIncomplete?.();
+      return;
+    }
+
+    navigate("/dashboard/profile");
+  }
 
   return (
-    <header className="sticky top-0 z-20 bg-gray-lightest">
-      <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4">
+    <header className="fixed inset-x-0 top-0 z-20 bg-gray-extra-light">
+      <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
         {/* Left: Avatar + Greeting */}
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Avatar */}
-          <button
-            type="button"
-            onClick={onProfileClick}
-            aria-label="Profile"
-            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-sm font-bold text-white transition-opacity hover:opacity-90"
-          >
-            {initials}
-          </button>
+        <div className="flex min-w-0 items-center gap-3">
+          <div onClick={handleAvatarClick}>
+            <Avatar
+              size="sm"
+              name={firstName}
+              profilePicture={profilePicture}
+            />
+          </div>
 
-          {/* Greeting */}
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-dark md:text-base">
+            <p className="truncate text-base font-extrabold text-gray-dark">
               Hi, {displayName}
+            </p>
+            <p className="text-xs text-gray-light">
+              {profileComplete ? "Welcome back" : "Complete your profile"}
             </p>
           </div>
         </div>
@@ -49,11 +61,11 @@ function Header({
           type="button"
           onClick={onNotificationClick}
           aria-label="Notifications"
-          className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-normal transition-colors hover:bg-gray-lighter"
+          className="relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-gray-dark transition-colors active:bg-gray-lightest"
         >
           <Icon icon="solar:bell-linear" className="h-5 w-5" />
           {notificationCount > 0 && (
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-error" />
+            <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-error" />
           )}
         </button>
       </div>

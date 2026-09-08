@@ -3,8 +3,8 @@
 
 :root {
   /* Primary */
-  --primary: #10b981;
-  --primary-dark: #04aa76;
+  --primary: #02794b;
+  --primary-dark: #0b3d2e;
   --error: #d32f2f;
 
   /* Gray Scale */
@@ -32,8 +32,8 @@
 }
 
 @theme {
-  --color-primary: #10b981;
-  --color-primary-dark: #04aa76;
+  --color-primary: #02794b;
+  --color-primary-dark: #0b3d2e;
   --color-error: #d32f2f;
   --color-gray-dark: #333333;
   --color-gray-semi-dark: #555555;
@@ -72,7 +72,6 @@ textarea,
 select {
   font-family: var(--font-sans);
   color: var(--gray-dark);
-  background-color: var(--gray-extra-light);
 }
 
 span {

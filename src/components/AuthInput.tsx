@@ -3,10 +3,12 @@ import React, { memo, useState } from "react";
 
 interface AuthInputProps {
   label: string;
-  icon: string;
+  icon?: string;
   name: string;
-  type: "email" | "password" | "text";
+  type: "email" | "password" | "text" | "tel";
   placeholder: string;
+  readOnly?: boolean;
+  backgroundColor?: string;
   value: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -16,15 +18,17 @@ interface AuthInputProps {
 
 function AuthInput({
   label,
-  icon,
+  icon = "",
   type,
   name,
   placeholder,
+  readOnly,
   value,
   onChange,
   onBlur,
   isPassword = false,
   error,
+  backgroundColor = "bg-gray-extra-light",
 }: AuthInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,9 +37,13 @@ function AuthInput({
 
   const shouldShowError = !!error;
 
-  const wrapperBorderClass = shouldShowError
-    ? "border-error"
-    : "border-transparent focus-within:border-primary";
+  let wrapperBorderClass = "border-transparent focus-within:border-primary";
+
+  if (shouldShowError) {
+    wrapperBorderClass = "border-error";
+  } else if (readOnly) {
+    wrapperBorderClass = "border-transparent";
+  }
 
   return (
     <div className="w-full">
@@ -47,7 +55,7 @@ function AuthInput({
       </label>
 
       <div
-        className={`flex items-center border bg-gray-extra-light transition-colors px-4 py-1 gap-1 rounded-full ${wrapperBorderClass}`}
+        className={`flex items-center border  transition-colors px-4 py-1 gap-1 rounded-full ${wrapperBorderClass} ${backgroundColor}`}
       >
         <Icon
           icon={icon}
@@ -63,6 +71,7 @@ function AuthInput({
           placeholder={placeholder}
           value={value}
           name={name}
+          readOnly={readOnly}
           onBlur={onBlur}
           onChange={onChange}
           className="bg-transparent w-full focus:outline-none text-sm font-medium py-2.5 px-2 placeholder-gray-light text-gray-normal "

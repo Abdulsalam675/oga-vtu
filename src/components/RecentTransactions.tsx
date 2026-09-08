@@ -4,14 +4,16 @@ import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
 
 type TransactionStatus = "success" | "pending" | "failed";
+type TransactionCategory = "airtime" | "data" | "bills" | "wallet";
 
 interface Transaction {
   id: string;
   title: string;
   description: string;
   date: string;
-  amount: number; // Positive for credits (funding), Negative for debits (purchases)
+  amount: number;
   status: TransactionStatus;
+  category: TransactionCategory;
 }
 
 interface RecentTransactionsProps {
@@ -23,58 +25,70 @@ const demoTransactions: Transaction[] = [
     id: "1",
     title: "MTN Airtime",
     description: "0803 123 4567",
-    date: "03 Sep, 10:24 AM",
+    date: "10:24 AM",
     amount: -500,
     status: "success",
+    category: "airtime",
   },
   {
     id: "2",
     title: "IKEDC Electricity",
     description: "Meter 45012345678",
-    date: "02 Sep, 6:40 PM",
+    date: "6:40 PM",
     amount: -8500,
     status: "pending",
+    category: "bills",
   },
   {
     id: "3",
-    title: "Transfer to Chinedu",
-    description: "Kuda Bank - 2019847362",
-    date: "02 Sep, 11:50 AM",
-    amount: -15000,
-    status: "failed",
+    title: "Wallet Top-up",
+    description: "Bank transfer (GTBank)",
+    date: "9:05 AM",
+    amount: 50000,
+    status: "success",
+    category: "wallet",
   },
   {
     id: "4",
-    title: "Wallet Top-up",
-    description: "Bank transfer (GTBank)",
-    date: "01 Sep, 9:05 AM",
-    amount: 50000,
+    title: "Airtel Data",
+    description: "0812 987 6543",
+    date: "4:12 PM",
+    amount: -1200,
     status: "success",
+    category: "data",
   },
   {
     id: "5",
-    title: "Airtel Data",
-    description: "0812 987 6543",
-    date: "31 Aug, 4:12 PM",
-    amount: -1200,
-    status: "success",
+    title: "DSTV Compact",
+    description: "Decoder 7031234567",
+    date: "2:15 PM",
+    amount: -8700,
+    status: "failed",
+    category: "bills",
   },
 ];
 
+const categoryIcons: Record<TransactionCategory, string> = {
+  airtime: "solar:phone-linear",
+  data: "solar:smartphone-linear",
+  bills: "solar:lightbulb-bolt-linear",
+  wallet: "solar:wallet-money-linear",
+};
+
 const statusStyles: Record<TransactionStatus, string> = {
-  success: "text-emerald-600", // Fixed to use semantic green rather than "text-primary" if primary is blue/purple
+  success: "text-emerald-600",
   pending: "text-amber-500",
-  failed: "text-red-500", // Fallback if your custom "text-error" config has issues
+  failed: "text-error",
 };
 
 function formatAmount(amount: number) {
-  const absoluteValue = new Intl.NumberFormat("en-NG", {
+  const value = new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN",
     minimumFractionDigits: 2,
   }).format(Math.abs(amount));
 
-  return amount >= 0 ? `+${absoluteValue}` : `-${absoluteValue}`;
+  return amount >= 0 ? `+${value}` : `-${value}`;
 }
 
 function RecentTransactions({
@@ -83,14 +97,14 @@ function RecentTransactions({
   return (
     <section className="w-full">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-xs font-medium text-gray-dark sm:text-sm">
+        <h2 className="text-xs font-semibold text-gray-dark">
           Recent transactions
         </h2>
         <Link
           to="/dashboard/history"
-          className="text-xs font-semibold text-primary transition-opacity hover:opacity-80 sm:text-sm"
+          className="text-xs font-semibold text-primary transition-opacity hover:opacity-80"
         >
-          view all
+          View all
         </Link>
       </div>
 
@@ -110,7 +124,7 @@ function RecentTransactions({
           </p>
         </div>
       ) : (
-        <ul className="overflow-hidden rounded-xl bg-white">
+        <ul className="overflow-hidden rounded-2xl bg-white">
           {transactions.map(function (tx, index) {
             const isCredit = tx.amount > 0;
             const isLast = index === transactions.length - 1;
@@ -119,58 +133,49 @@ function RecentTransactions({
               <li key={tx.id}>
                 <button
                   type="button"
-                  className={`flex w-full cursor-pointer items-center justify-between gap-3 p-3.5 text-left transition-colors hover:bg-gray-extra-light/50 active:bg-gray-extra-light sm:gap-4 sm:p-4 ${
-                    !isLast ? "border-b border-gray-lightest" : ""
-                  }`}
+                  className={
+                    "flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-gray-extra-light " +
+                    (!isLast ? "border-b border-gray-lightest" : "")
+                  }
                 >
-                  {/* Icon Container */}
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 ${
-                      isCredit
-                        ? "bg-emerald-500/10 text-emerald-600"
-                        : "bg-primary/10 text-primary"
-                    }`}
-                  >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     <Icon
-                      icon={
-                        isCredit
-                          ? "solar:arrow-down-linear"
-                          : "solar:arrow-up-linear"
-                      }
-                      className="h-4 w-4"
+                      icon={categoryIcons[tx.category]}
+                      className="h-5 w-5 text-primary"
                     />
                   </div>
 
-                  {/* Primary Details (Left-aligned) */}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-semibold text-gray-semi-dark sm:text-sm">
+                    <p className="text-sm font-medium text-gray-semi-dark">
                       {tx.title}
                     </p>
-                    {tx.description && (
-                      <p className="mt-0.5 truncate text-[11px] text-gray-normal sm:text-xs">
-                        {tx.description}
-                      </p>
-                    )}
+                    <p className="mt-0.5 text-xs text-gray-light">
+                      {tx.description}
+                      {tx.status !== "success" && (
+                        <span
+                          className={
+                            "font-medium capitalize " + statusStyles[tx.status]
+                          }
+                        >
+                          {" · "}
+                          {tx.status}
+                        </span>
+                      )}
+                    </p>
                   </div>
 
-                  {/* Financial & Status Info (Right-aligned) */}
                   <div className="shrink-0 text-right">
                     <p
-                      className={`text-xs font-semibold sm:text-sm ${
-                        isCredit ? "text-emerald-600" : "text-gray-semi-dark"
-                      }`}
+                      className={
+                        "text-sm font-medium " +
+                        (isCredit ? "text-emerald-600" : "text-gray-semi-dark")
+                      }
                     >
                       {formatAmount(tx.amount)}
                     </p>
-
-                    <div className="mt-1 flex items-center justify-end gap-1.5 text-[11px] sm:text-xs">
-                      <span className="text-gray-normal">{tx.date}</span>
-                      <span
-                        className={`font-semibold capitalize ${statusStyles[tx.status]}`}
-                      >
-                        {tx.status}
-                      </span>
-                    </div>
+                    <p className="mt-0.5 text-[11px] text-gray-light">
+                      {tx.date}
+                    </p>
                   </div>
                 </button>
               </li>
