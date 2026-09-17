@@ -1,26 +1,47 @@
-// src/App.tsx
 import { memo, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import "./index.css";
 
-import Signup from "./pages/SignupPage";
-import Signin from "./pages/SigninPage";
-import SignupEmail from "./pages/SignupEmailPage";
-import SigninEmail from "./pages/SigninEmailPage";
-import VerifyEmail from "./pages/VerifyEmailPage";
-import ForgotPassword from "./pages/ForgotPasswordPage";
-import ResetPassword from "./pages/RestPasswordPage";
-import CreatePin from "./pages/CreatePinPage";
+import Signup from "./pages/auth/SignupPage";
+import Signin from "./pages/auth/SigninPage";
+import SignupEmail from "./pages/auth/SignupEmailPage";
+import SigninEmail from "./pages/auth/SigninEmailPage";
+import VerifyEmail from "./pages/auth/VerifyEmailPage";
+import ForgotPassword from "./pages/auth/ForgotPasswordPage";
+import ResetPassword from "./pages/auth/RestPasswordPage";
+import CreatePin from "./pages/auth/CreatePinPage";
 
-import DashboardLayout from "./components/layout/DashboardLayout";
-import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
-import HistoryPage from "./pages/HistoryPage";
-import PersonalInfoPage from "./pages/PersonalInfoPage";
-import SecurityPage from "./pages/SecurityPage";
-import SupportPage from "./pages/SupportPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
+import DashboardWithNavLayout from "./components/layout/DashboardWithNavLayout";
+
+import HomePage from "./pages/dashboard/HomePage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import HistoryPage from "./pages/dashboard/HistoryPage";
+import TransactionDetailsPage from "./pages/dashboard/TransactionDetailsPage";
+import PersonalInfoPage from "./pages/profile/PersonalInfoPage";
+import SecurityPage from "./pages/profile/SecurityPage";
+import SupportPage from "./pages/profile/SupportPage";
+import ChangePasswordPage from "./pages/profile/ChangePasswordPage";
+import AirtimePage from "./pages/airtime/AirtimePage";
+import AirtimeConfirmPage from "./pages/airtime/AirtimeConfirmPage";
+import DataPage from "./pages/data/DataPage";
+import MainLayout from "./components/layout/MainLayout";
+import AirtimeSuccessPage from "./pages/airtime/AirtimeSuccessPage";
+import DataConfirmPage from "./pages/data/DataConfirmPage";
+import DataSuccessPage from "./pages/data/DataSuccessPage";
+import ElectricityPage from "./pages/electricity/ElectricityPage";
+import ElectricityConfirmPage from "./pages/electricity/ElectricityConfirmPage";
+import ElectricitySuccessPage from "./pages/electricity/ElectricitySuccessPage";
+import CableTvPage from "./pages/cable-tv/CableTvPage";
+import CableTvConfirmPage from "./pages/cable-tv/CableTvConfirmPage";
+import CableTvSuccessPage from "./pages/cable-tv/CableTvSuccessPage";
+import ChangePinPage from "./pages/profile/ChangePinPage";
+import ServicesPage from "./pages/dashboard/ServicesPage";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
+import TransferPage from "./pages/transfer/TransferPage";
+import TransferAmountPage from "./pages/transfer/TransferAmountPage";
+import TransferConfirmPage from "./pages/transfer/TransferConfirmPage";
+import TransferSuccessPage from "./pages/transfer/TransferSuccessPage";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 730);
@@ -43,7 +64,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth */}
         <Route path="/" element={<Signup />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
@@ -58,21 +78,58 @@ function App() {
         />
         <Route path="/create-pin" element={<CreatePin />} />
 
-        {/* Dashboard (mobile shell) */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<HomePage />} />
+        <Route path="/dashboard" element={<MainLayout />}>
+          <Route element={<DashboardWithNavLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="history" element={<HistoryPage />} />
+
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="transfer" element={<TransferPage />} />
+          <Route path="transfer/amount" element={<TransferAmountPage />} />
+          <Route path="transfer/confirm" element={<TransferConfirmPage />} />
+          <Route path="transfer/success" element={<TransferSuccessPage />} />
           <Route
-            path="services"
-            element={<div className="text-gray-dark">Services coming next</div>}
+            path="airtime"
+            element={<AirtimePage userPhoneNumber="07030521327" />}
           />
-          <Route path="history" element={<HistoryPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="airtime/confirm" element={<AirtimeConfirmPage />} />
+          <Route path="airtime/success" element={<AirtimeSuccessPage />} />
+          <Route
+            path="data"
+            element={<DataPage userPhoneNumber="07030521327" />}
+          />
+          <Route path="data/confirm" element={<DataConfirmPage />} />
+          <Route path="data/success" element={<DataSuccessPage />} />
+          <Route path="electricity" element={<ElectricityPage />} />
+          <Route
+            path="electricity/confirm"
+            element={<ElectricityConfirmPage />}
+          />
+          <Route
+            path="electricity/success"
+            element={<ElectricitySuccessPage />}
+          />
+          <Route path="cable-tv" element={<CableTvPage />} />
+          <Route path="cable-tv/confirm" element={<CableTvConfirmPage />} />
+          <Route path="cable-tv/success" element={<CableTvSuccessPage />} />
+          <Route
+            path="transaction-details"
+            element={<TransactionDetailsPage />}
+          />
+          <Route path="more-services" element={<ServicesPage />} />
           <Route path="profile/personal" element={<PersonalInfoPage />} />
           <Route path="profile/security" element={<SecurityPage />} />
           <Route path="profile/support" element={<SupportPage />} />
           <Route
             path="profile/security/change-password"
             element={<ChangePasswordPage />}
+          />
+          <Route
+            path="profile/security/change-pin"
+            element={<ChangePinPage />}
           />
         </Route>
       </Routes>

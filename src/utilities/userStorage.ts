@@ -27,7 +27,6 @@ export function getUserData(): UserData | null {
   }
 }
 
-// Merge new fields into existing user
 export function updateUserData(updates: Partial<UserData>) {
   const current = getUserData();
 

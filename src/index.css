@@ -2,12 +2,10 @@
 @import "tailwindcss";
 
 :root {
-  /* Primary */
   --primary: #02794b;
   --primary-dark: #0b3d2e;
   --error: #d32f2f;
 
-  /* Gray Scale */
   --gray-dark: #1b1b1b;
   --gray-semi-dark: #555555;
   --gray-normal: #888888;
@@ -17,7 +15,6 @@
   --gray-extra-light: #f9f9f9;
   --white: #ffffff;
 
-  /* Typography */
   --font-sans:
     "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display:
@@ -85,7 +82,6 @@ span {
   flex-direction: column;
 }
 
-/* Auth / shared UI */
 .btn-primary {
   background-color: var(--primary);
   color: var(--white);

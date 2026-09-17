@@ -1,8 +1,7 @@
-// src/components/SplitScreenLayout.tsx
 import { memo } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import Logo from "../Logo";
+import Logo from "../branding/Logo";
 
 interface SplitScreenLayoutProps {
   children: ReactNode;
@@ -26,7 +25,6 @@ function SplitScreenLayout({
 }: SplitScreenLayoutProps) {
   return (
     <div className="min-h-dvh w-full flex items-stretch select-none text-gray-dark antialiased">
-      {/* LEFT PANEL — desktop only */}
       <div className="relative hidden md:flex md:w-[40%] h-dvh sticky top-0 flex-col justify-between overflow-hidden p-14 text-white bg-gradient-to-b from-primary via-[#059669] to-[#064e3b]">
         <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[450px] w-[450px] rounded-full bg-white/[0.08] blur-[100px]" />
         <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[350px] w-[350px] rounded-full bg-emerald-400/10 blur-[90px]" />
@@ -69,10 +67,8 @@ function SplitScreenLayout({
         </footer>
       </div>
 
-      {/* RIGHT PANEL */}
       <section className="relative z-30 flex w-full min-h-dvh flex-col items-center justify-start bg-white p-4 pt-6 shadow-2xl sm:p-10 md:w-[60%] md:justify-center md:pt-0 md:p-16">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
           <div className="mb-8 text-left md:hidden">
             <Logo color="primary" size="md" />
           </div>

@@ -17,8 +17,8 @@ function AuthButton({ icon, label, color, onClick }: AuthButtonProps) {
     >
       <Icon
         icon={icon}
-        width={22}
-        height={22}
+        width={21}
+        height={21}
         className={color}
         aria-hidden="true"
       />

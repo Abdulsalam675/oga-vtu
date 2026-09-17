@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-// Reusable custom messages
 const passwordComplexityMessage =
   "Password must have: 8+ characters, uppercase letter, number, special character";
 
-// Sign up validation rules
+// Sign-up email and password validation.
 export const signupEmailSchema = z.object({
   email: z
     .string()
@@ -20,7 +19,7 @@ export const signupEmailSchema = z.object({
     .regex(/[!@#$%^&*]/, passwordComplexityMessage),
 });
 
-// Sign in validation rules
+// Sign-in email and password validation.
 export const signinEmailSchema = z.object({
   email: z
     .string()
@@ -30,7 +29,7 @@ export const signinEmailSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-// Forgot password validation rules
+// Forgot-password email validation.
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
@@ -39,7 +38,7 @@ export const forgotPasswordSchema = z.object({
     .email("Invalid email address"),
 });
 
-// Reset password validation rules
+// New-password and confirmation validation.
 export const resetPasswordSchema = z
   .object({
     newPassword: z
@@ -56,7 +55,7 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-// OTP / Email verification validation rules
+// Email verification code validation.
 export const verifyEmailSchema = z.object({
   otp: z
     .string()
@@ -65,7 +64,7 @@ export const verifyEmailSchema = z.object({
     .regex(/^\d+$/, "Code must only contain numbers"),
 });
 
-// Transaction PIN validation rules
+// Transaction PIN and confirmation validation.
 export const createPinSchema = z
   .object({
     pin: z
@@ -80,6 +79,7 @@ export const createPinSchema = z
     path: ["confirmPin"],
   });
 
+// Profile full-name validation.
 export const fullNameSchema = z.object({
   fullName: z
     .string()
@@ -89,6 +89,7 @@ export const fullNameSchema = z.object({
     .regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters and spaces"),
 });
 
+// Nigerian phone-number validation.
 export const phoneNumberSchema = z.object({
   phone: z
     .string()
@@ -101,7 +102,6 @@ export const phoneNumberSchema = z.object({
     ),
 });
 
-// Types inference exports
 export type SignupEmailSchema = z.infer<typeof signupEmailSchema>;
 export type SigninEmailSchema = z.infer<typeof signinEmailSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;

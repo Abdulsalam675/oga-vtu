@@ -32,7 +32,6 @@ function AuthFormLayout({
     <div className="min-h-dvh w-full flex items-stretch select-none text-gray-dark antialiased pt-2 md:pt-0">
       <section className="flex min-h-dvh w-full flex-col items-center justify-start bg-white p-4 pt-6 sm:p-14">
         <form className="w-full max-w-md pb-6" onSubmit={onSubmit}>
-          {/* Navigation Back Arrow */}
           <div className="mb-4 flex items-center justify-start">
             <button
               type="button"
@@ -44,7 +43,6 @@ function AuthFormLayout({
             </button>
           </div>
 
-          {/* Title and Subtitle */}
           <div className="space-y-2 mb-8 text-left">
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-dark">
               {title}
@@ -54,15 +52,12 @@ function AuthFormLayout({
             </p>
           </div>
 
-          {/* Input Stack (children) */}
           <div className="space-y-5">{children}</div>
 
-          {/* Primary Action Button */}
           <div className="pt-5">
             <Button label={buttonLabel} htmlType="submit" loading={isLoading} />
           </div>
 
-          {/* Alternative Account Redirection - Only show if props provided */}
           {linkLabel && linkTo && linkName && (
             <p className="mt-8 text-sm text-gray-light text-center font-semibold">
               {linkLabel}{" "}
