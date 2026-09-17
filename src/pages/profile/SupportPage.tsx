@@ -47,7 +47,7 @@ function SupportPage() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   function handleToggle(id: string) {
-    setOpenId(function (current) {
+    setOpenId((current) => {
       return current === id ? null : id;
     });
   }
@@ -78,7 +78,7 @@ function SupportPage() {
             </h3>
 
             <div className="space-y-3">
-              {faqs.map(function (item) {
+              {faqs.map((item) => {
                 const isOpen = openId === item.id;
 
                 return (
@@ -88,7 +88,7 @@ function SupportPage() {
                   >
                     <button
                       type="button"
-                      onClick={function () {
+                      onClick={() => {
                         handleToggle(item.id);
                       }}
                       className="flex w-full cursor-pointer items-center justify-between px-4 py-4 text-left transition-colors active:bg-gray-extra-light"

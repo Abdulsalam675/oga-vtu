@@ -38,7 +38,7 @@ function PersonalInfoPage() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (event) {
+    reader.onload = (event) => {
       const base64String = event.target?.result as string;
 
       const next = updateUserData({

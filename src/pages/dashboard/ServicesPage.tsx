@@ -96,7 +96,7 @@ function ServicesPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        {services.map(function (service) {
+        {services.map((service) => {
           const isAvailable = service.path !== "";
 
           return (
@@ -104,7 +104,7 @@ function ServicesPage() {
               key={service.id}
               type="button"
               disabled={!isAvailable}
-              onClick={function () {
+              onClick={() => {
                 if (isAvailable) navigate(service.path);
               }}
               className="relative flex cursor-pointer flex-col items-center gap-1 rounded-2xl bg-white p-3 transition-opacity active:scale-95 disabled:cursor-not-allowed disabled:opacity-55"

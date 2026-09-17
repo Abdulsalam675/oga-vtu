@@ -44,7 +44,7 @@ function TransferConfirmPage() {
   function handlePinComplete() {
     setIsLoading(true);
 
-    setTimeout(function () {
+    setTimeout(() => {
       setIsLoading(false);
       setShowPinModal(false);
       navigate("/dashboard/transfer/success", {

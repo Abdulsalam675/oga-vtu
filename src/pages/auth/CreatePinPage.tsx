@@ -104,7 +104,7 @@ function CreatePin() {
               isShaking ? "shake" : ""
             }`}
           >
-            {[0, 1, 2, 3].map(function (index) {
+            {[0, 1, 2, 3].map((index) => {
               return (
                 <div
                   key={index}

@@ -122,7 +122,7 @@ function ProfilePage() {
         <h3 className="mb-3 text-sm font-semibold text-gray-dark">Account</h3>
 
         <ul className="space-y-3">
-          {menuItems.map(function (item) {
+          {menuItems.map((item) => {
             return (
               <li key={item.id}>
                 <button

@@ -43,7 +43,7 @@ function QuickActions({
         <h3 className="text-xs font-semibold text-gray-dark">Services</h3>
       </div>
       <div className="grid grid-cols-3 gap-3">
-        {actions.map(function (action) {
+        {actions.map((action) => {
           return (
             <button
               key={action.id}

@@ -82,7 +82,7 @@ function TransferAmountPage() {
               value={narration}
               maxLength={100}
               rows={3}
-              onChange={function (e) {
+              onChange={(e) => {
                 setNarration(e.target.value);
               }}
               className="w-full resize-none rounded-2xl bg-gray-extra-light px-4 py-3 text-sm font-medium text-gray-dark outline-none placeholder:text-gray-light"

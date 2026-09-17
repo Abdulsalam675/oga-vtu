@@ -1,7 +1,9 @@
 import { memo } from "react";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import TransactionCard, { type TransactionCardData } from "../transactions/TransactionCard";
+import TransactionCard, {
+  type TransactionCardData,
+} from "../transactions/TransactionCard";
 import { demoTransactions } from "../../constants/transactions";
 
 interface RecentTransactionsProps {
@@ -39,7 +41,7 @@ function RecentTransactions({
         </div>
       ) : (
         <ul className="overflow-hidden rounded-2xl bg-white">
-          {transactions.map(function (transaction, index) {
+          {transactions.map((transaction, index) => {
             return (
               <TransactionCard
                 key={transaction.id}

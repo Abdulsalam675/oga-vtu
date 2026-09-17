@@ -46,13 +46,13 @@ import TransferSuccessPage from "./pages/transfer/TransferSuccessPage";
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 730);
 
-  useEffect(function () {
+  useEffect(() => {
     function handleResize() {
       setIsMobile(window.innerWidth < 730);
     }
 
     window.addEventListener("resize", handleResize);
-    return function () {
+    return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);

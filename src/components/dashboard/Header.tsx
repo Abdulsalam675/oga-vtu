@@ -8,7 +8,6 @@ interface HeaderProps {
   profilePicture?: string;
   profileComplete?: boolean;
   notificationCount?: number;
-  onNotificationClick?: () => void;
 }
 
 function Header({
@@ -16,7 +15,6 @@ function Header({
   profilePicture,
   profileComplete = false,
   notificationCount = 0,
-  onNotificationClick,
 }: HeaderProps) {
   const navigate = useNavigate();
   return (
@@ -41,12 +39,7 @@ function Header({
         </div>
         <button
           type="button"
-          onClick={
-            onNotificationClick ||
-            function () {
-              navigate("/dashboard/notifications");
-            }
-          }
+          onClick={() => navigate("/dashboard/notifications")}
           aria-label="Notifications"
           className="relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-gray-dark transition-colors active:bg-gray-lightest"
         >

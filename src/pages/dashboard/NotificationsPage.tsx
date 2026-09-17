@@ -79,7 +79,7 @@ function NotificationsPage() {
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl bg-white">
-            {demoNotifications.map(function (notification, index) {
+            {demoNotifications.map((notification, index) => {
               return (
                 <article
                   key={notification.id}

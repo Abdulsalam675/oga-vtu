@@ -12,35 +12,29 @@ type Transaction = TransactionCardData & {
 function HistoryPage() {
   const [search, setSearch] = useState("");
 
-  const filtered = useMemo(
-    function () {
-      const q = search.trim().toLowerCase();
-      if (!q) return demoTransactions;
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return demoTransactions;
 
-      return demoTransactions.filter(function (tx) {
-        return (
-          tx.title.toLowerCase().includes(q) ||
-          tx.description.toLowerCase().includes(q)
-        );
-      });
-    },
-    [search],
-  );
+    return demoTransactions.filter((tx) => {
+      return (
+        tx.title.toLowerCase().includes(q) ||
+        tx.description.toLowerCase().includes(q)
+      );
+    });
+  }, [search]);
 
-  const grouped = useMemo(
-    function () {
-      const map = new Map<string, Transaction[]>();
+  const grouped = useMemo(() => {
+    const map = new Map<string, Transaction[]>();
 
-      filtered.forEach(function (tx) {
-        const list = map.get(tx.dateGroup) || [];
-        list.push(tx);
-        map.set(tx.dateGroup, list);
-      });
+    filtered.forEach((tx) => {
+      const list = map.get(tx.dateGroup) || [];
+      list.push(tx);
+      map.set(tx.dateGroup, list);
+    });
 
-      return Array.from(map.entries());
-    },
-    [filtered],
-  );
+    return Array.from(map.entries());
+  }, [filtered]);
 
   function handleFilterClick() {}
 
@@ -69,7 +63,7 @@ function HistoryPage() {
           <input
             type="search"
             value={search}
-            onChange={function (e) {
+            onChange={(e) => {
               setSearch(e.target.value);
             }}
             placeholder="Search transactions"
@@ -95,7 +89,7 @@ function HistoryPage() {
           </div>
         ) : (
           <div className="space-y-5 pb-4">
-            {grouped.map(function ([group, items]) {
+            {grouped.map(([group, items]) => {
               return (
                 <section key={group}>
                   <h2 className="mb-2 px-1 text-xs font-semibold text-gray-normal">
@@ -103,7 +97,7 @@ function HistoryPage() {
                   </h2>
 
                   <ul className="overflow-hidden rounded-2xl bg-white">
-                    {items.map(function (tx, index) {
+                    {items.map((tx, index) => {
                       return (
                         <TransactionCard
                           key={tx.id}

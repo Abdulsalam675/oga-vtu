@@ -23,7 +23,7 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
   const [values, setValues] = useState(initializeValues);
 
   function initializeValues() {
-    return Array.from({ length }, function getEmptyValue() {
+    return Array.from({ length }, () => {
       return "";
     });
   }
@@ -74,12 +74,9 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
       .replace(/\D/g, "")
       .slice(0, length);
 
-    const nextValues = Array.from(
-      { length },
-      function getPastedValue(_, index) {
-        return pastedValue[index] ?? "";
-      },
-    );
+    const nextValues = Array.from({ length }, (_, index) => {
+      return pastedValue[index] ?? "";
+    });
     updateValues(nextValues);
     inputRefs.current[Math.min(pastedValue.length, length - 1)]?.focus();
   }
@@ -107,7 +104,7 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
     return (
       <input
         key={index}
-        ref={function assignInputRef(element) {
+        ref={(element) => {
           setInputRef(index, element);
         }}
         type="text"
@@ -115,10 +112,10 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
         maxLength={1}
         value={value}
         autoFocus={index === 0}
-        onChange={function handleInputChangeEvent(event) {
+        onChange={(event) => {
           handleInputChange(index, event);
         }}
-        onKeyDown={function handleInputKeyDownEvent(event) {
+        onKeyDown={(event) => {
           handleInputKeyDown(index, event);
         }}
         onPaste={handlePaste}

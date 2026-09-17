@@ -28,13 +28,10 @@ function TransferPage() {
   const [accountNumber, setAccountNumber] = useState("");
   const [showBankModal, setShowBankModal] = useState(false);
 
-  const accountName = useMemo(
-    function () {
-      if (!selectedBank || accountNumber.trim().length < 10) return "";
-      return "Abdulsalam Umoru";
-    },
-    [selectedBank, accountNumber],
-  );
+  const accountName = useMemo(() => {
+    if (!selectedBank || accountNumber.trim().length < 10) return "";
+    return "Abdulsalam Umoru";
+  }, [selectedBank, accountNumber]);
 
   const canContinue =
     !!selectedBank && accountNumber.trim().length >= 10 && accountName !== "";
