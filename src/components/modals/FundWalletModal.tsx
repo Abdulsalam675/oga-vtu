@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Icon } from "@iconify/react";
 import Modal from "../layout/Modal";
+import toast from "react-hot-toast";
 
 interface FundWalletModalProps {
   open: boolean;
@@ -60,6 +61,7 @@ function FundWalletModal({ open, onClose }: FundWalletModalProps) {
         <div className="grid grid-cols-2 gap-3 pt-1">
           <button
             type="button"
+            onClick={() => toast.success("Copied")}
             className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-gray-extra-light py-3.5 text-sm font-semibold text-gray-dark active:bg-gray-lightest"
           >
             <Icon icon="solar:copy-linear" className="h-4 w-4" />

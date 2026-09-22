@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionSuccess from "../../components/layout/TransactionSuccess";
+import { useTransactions } from "../../context/TransactionsContext";
 
 interface LocationState {
   phoneNumber?: string;
@@ -12,6 +13,7 @@ function AirtimeSuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state || {}) as LocationState;
+  const { addTransaction } = useTransactions();
 
   const phoneNumber = state.phoneNumber || "8012345678";
   const networkName = state.networkName || "MTN";
@@ -21,6 +23,7 @@ function AirtimeSuccessPage() {
     () => `OGA${Date.now().toString().slice(-10)}`,
   );
   const [timestamp] = useState(() => new Date());
+  const hasSaved = useRef(false);
 
   const formattedDate = timestamp.toLocaleDateString("en-NG", {
     day: "numeric",
@@ -32,16 +35,34 @@ function AirtimeSuccessPage() {
     minute: "2-digit",
     hour12: true,
   });
+
+  useEffect(() => {
+    if (hasSaved.current) return;
+    hasSaved.current = true;
+
+    addTransaction(
+      {
+        id: transactionId,
+        title: `${networkName} Airtime`,
+        description: phoneNumber,
+        date: formattedTime,
+        dateGroup: "Today",
+        amount: -Number(amount),
+        status: "success",
+        category: "airtime",
+      },
+      -Number(amount),
+    );
+  }, []);
+
   const details = [
     { label: "Transaction ID", value: transactionId },
     { label: "Recipient", value: phoneNumber },
     { label: "Network", value: networkName },
     { label: "Service", value: "Airtime" },
-    {
-      label: "Date & time",
-      value: `${formattedDate} · ${formattedTime}`,
-    },
+    { label: "Date & time", value: `${formattedDate} · ${formattedTime}` },
   ];
+
   return (
     <TransactionSuccess
       title="Airtime purchased"

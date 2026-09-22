@@ -2,10 +2,10 @@ import { memo } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { serviceIcons } from "../../constants/serviceIcons";
+import toast from "react-hot-toast";
 
 interface QuickActionsProps {
   profileComplete?: boolean;
-  onProfileIncomplete?: () => void;
 }
 
 const actions = [
@@ -17,14 +17,11 @@ const actions = [
   { id: "more", label: "More", icon: serviceIcons.more },
 ];
 
-function QuickActions({
-  profileComplete = false,
-  onProfileIncomplete,
-}: QuickActionsProps) {
+function QuickActions({ profileComplete = false }: QuickActionsProps) {
   const navigate = useNavigate();
   function handleActionClick(id: string) {
-    if (!profileComplete) {
-      onProfileIncomplete?.();
+    if (!profileComplete && id !== "more") {
+      toast.error("Complete your profile to continue");
       return;
     }
     const paths: Record<string, string> = {

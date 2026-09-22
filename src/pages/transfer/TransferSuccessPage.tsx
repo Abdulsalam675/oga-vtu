@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionSuccess from "../../components/layout/TransactionSuccess";
+import { useTransactions } from "../../context/TransactionsContext";
 
 interface LocationState {
   bankName?: string;
@@ -14,6 +15,7 @@ function TransferSuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state || {}) as LocationState;
+  const { addTransaction } = useTransactions();
 
   const bankName = state.bankName || "";
   const accountNumber = state.accountNumber || "";
@@ -25,6 +27,7 @@ function TransferSuccessPage() {
     () => `OGA${Date.now().toString().slice(-10)}`,
   );
   const [timestamp] = useState(() => new Date());
+  const hasSaved = useRef(false);
 
   const formattedDate = timestamp.toLocaleDateString("en-NG", {
     day: "numeric",
@@ -36,6 +39,32 @@ function TransferSuccessPage() {
     minute: "2-digit",
     hour12: true,
   });
+
+  useEffect(() => {
+    if (hasSaved.current) return;
+    hasSaved.current = true;
+
+    addTransaction(
+      {
+        id: transactionId,
+        title: `Transfer to ${accountName}`,
+        description: accountNumber,
+        date: formattedTime,
+        dateGroup: "Today",
+        amount: -Number(amount),
+        status: "success",
+        category: "transfer",
+        transferDetails: {
+          from: "OGA Wallet",
+          to: accountName,
+          accountNumber,
+          bankName,
+          narration,
+        },
+      },
+      -Number(amount),
+    );
+  }, []);
 
   const details = [
     { label: "Transaction ID", value: transactionId },

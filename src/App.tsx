@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { Toaster } from "react-hot-toast";
 import "./index.css";
 
 import Signup from "./pages/auth/SignupPage";
@@ -15,7 +16,7 @@ import CreatePin from "./pages/auth/CreatePinPage";
 import DashboardWithNavLayout from "./components/layout/DashboardWithNavLayout";
 
 import HomePage from "./pages/dashboard/HomePage";
-import ProfilePage from "./pages/profile/ProfilePage";
+import ProfilePage from "./pages/dashboard/ProfilePage";
 import HistoryPage from "./pages/dashboard/HistoryPage";
 import TransactionDetailsPage from "./pages/dashboard/TransactionDetailsPage";
 import PersonalInfoPage from "./pages/profile/PersonalInfoPage";
@@ -42,6 +43,7 @@ import TransferPage from "./pages/transfer/TransferPage";
 import TransferAmountPage from "./pages/transfer/TransferAmountPage";
 import TransferConfirmPage from "./pages/transfer/TransferConfirmPage";
 import TransferSuccessPage from "./pages/transfer/TransferSuccessPage";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 730);
@@ -78,7 +80,14 @@ function App() {
         />
         <Route path="/create-pin" element={<CreatePin />} />
 
-        <Route path="/dashboard" element={<MainLayout />}>
+        <Route
+          path="/dashboard"
+          element={
+            <UserProvider>
+              <MainLayout />
+            </UserProvider>
+          }
+        >
           <Route element={<DashboardWithNavLayout />}>
             <Route index element={<HomePage />} />
             <Route path="history" element={<HistoryPage />} />
@@ -91,16 +100,10 @@ function App() {
           <Route path="transfer/amount" element={<TransferAmountPage />} />
           <Route path="transfer/confirm" element={<TransferConfirmPage />} />
           <Route path="transfer/success" element={<TransferSuccessPage />} />
-          <Route
-            path="airtime"
-            element={<AirtimePage userPhoneNumber="07030521327" />}
-          />
+          <Route path="airtime" element={<AirtimePage />} />
           <Route path="airtime/confirm" element={<AirtimeConfirmPage />} />
           <Route path="airtime/success" element={<AirtimeSuccessPage />} />
-          <Route
-            path="data"
-            element={<DataPage userPhoneNumber="07030521327" />}
-          />
+          <Route path="data" element={<DataPage />} />
           <Route path="data/confirm" element={<DataConfirmPage />} />
           <Route path="data/success" element={<DataSuccessPage />} />
           <Route path="electricity" element={<ElectricityPage />} />
@@ -133,6 +136,20 @@ function App() {
           />
         </Route>
       </Routes>
+
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 1500,
+          style: {
+            fontSize: "14px",
+            fontWeight: 600,
+            borderRadius: "12px",
+            maxWidth: "420px",
+          },
+        }}
+      />
     </BrowserRouter>
   );
 }

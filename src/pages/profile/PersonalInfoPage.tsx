@@ -1,20 +1,15 @@
 import { memo, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { updateUserData, type UserData } from "../../utilities/userStorage";
+import { useUser } from "../../context/UserContext";
 import { fullNameSchema, phoneNumberSchema } from "../../schemas/authSchemas";
 import AuthInput from "../../components/inputs/AuthInput";
 import Avatar from "../../components/dashboard/Avatar";
 import Button from "../../components/buttons/Button";
 import SubPageLayout from "../../components/layout/SubPageLayout";
-
-type DashboardContext = {
-  user: UserData | null;
-  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
-};
+import toast from "react-hot-toast";
 
 function PersonalInfoPage() {
-  const { user, setUser } = useOutletContext<DashboardContext>();
+  const { user, patchUser } = useUser();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState(user?.fullName || "");
@@ -40,14 +35,7 @@ function PersonalInfoPage() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64String = event.target?.result as string;
-
-      const next = updateUserData({
-        profilePicture: base64String,
-      });
-
-      if (next) {
-        setUser(next);
-      }
+      patchUser({ profilePicture: base64String });
     };
     reader.readAsDataURL(file);
   }
@@ -83,17 +71,15 @@ function PersonalInfoPage() {
     setIsLoading(true);
 
     setTimeout(() => {
-      const next = updateUserData({
+      patchUser({
         fullName: fullName.trim(),
         phoneNumber: phone.trim(),
+        profileComplete: true,
       });
-
-      if (next) {
-        setUser(next);
-      }
 
       setIsLoading(false);
       setSaved(true);
+      toast.success("Profile updated successfully");
     }, 1500);
   }
 
@@ -107,10 +93,12 @@ function PersonalInfoPage() {
           editable
           onEditClick={handleAvatarClick}
         />
+        {/* Profile picture */}
         <input
           ref={fileRef}
           type="file"
           accept="image/*"
+          autoComplete="off"
           className="hidden"
           onChange={handleFileChange}
         />

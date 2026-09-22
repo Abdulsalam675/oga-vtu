@@ -8,6 +8,7 @@ export interface UserData {
   fullName?: string;
   phoneNumber?: string;
   isLoggedIn?: boolean;
+  hideAmount?: boolean;
 }
 
 const USER_DATA_KEY = "userData";

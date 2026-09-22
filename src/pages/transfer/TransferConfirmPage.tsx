@@ -21,14 +21,9 @@ function TransferConfirmPage() {
   const accountName = state.accountName || "Beneficiary";
   const amount = state.amount || "0";
   const narration = state.narration || "";
-  const availableBalance = state.availableBalance ?? 0;
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const formattedBalance = Number(availableBalance).toLocaleString("en-NG", {
-    minimumFractionDigits: 2,
-  });
 
   const subtitle = `${accountName} · ${bankName}`;
 
@@ -37,7 +32,6 @@ function TransferConfirmPage() {
     { label: "Account NO", value: accountNumber },
     { label: "Bank", value: bankName },
     { label: "Narration", value: narration || "—" },
-    { label: "Available balance", value: `₦${formattedBalance}` },
     { label: "Fee", value: "Free" },
   ];
 

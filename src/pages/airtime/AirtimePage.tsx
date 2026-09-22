@@ -5,15 +5,14 @@ import Button from "../../components/buttons/Button";
 import PhoneNetworkFields from "../../components/inputs/PhoneNetworkFields";
 import SelectOptionModal from "../../components/modals/SelectOptionModal";
 import AmountFields from "../../components/inputs/AmountFields.tsx";
-
-interface AirtimePageProps {
-  userPhoneNumber?: string;
-}
+import { useUser } from "../../context/UserContext.tsx";
 
 const MIN_AMOUNT = 50;
 
-function AirtimePage({ userPhoneNumber = "" }: AirtimePageProps) {
+function AirtimePage() {
   const navigate = useNavigate();
+  const { user } = useUser();
+  const userPhoneNumber = user?.phoneNumber || "";
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedNetworkId, setSelectedNetworkId] = useState("mtn");
   const [selectedNetwork, setSelectedNetwork] = useState("MTN");
@@ -80,6 +79,7 @@ function AirtimePage({ userPhoneNumber = "" }: AirtimePageProps) {
       alert("Enter a valid phone number");
       return;
     }
+
     goToConfirm(String(value));
   }
 

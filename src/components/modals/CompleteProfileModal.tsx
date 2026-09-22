@@ -5,6 +5,7 @@ import { capitalizeWords } from "../../utilities/capitalizeWords";
 import { updateUserData } from "../../utilities/userStorage";
 import AuthInput from "../inputs/AuthInput";
 import Button from "../buttons/Button";
+import toast from "react-hot-toast";
 
 interface CompleteProfileModalProps {
   open: boolean;
@@ -12,111 +13,169 @@ interface CompleteProfileModalProps {
   onComplete?: (data: { fullName: string; phone: string }) => void;
 }
 
+interface FormData {
+  fullName: string;
+  phone: string;
+}
+
+interface FormErrors {
+  fullName: string;
+  phone: string;
+}
+
 function CompleteProfileModal({
   open,
   onClose,
   onComplete,
 }: CompleteProfileModalProps) {
-  const [formData, setFormData] = useState({ fullName: "", phone: "" });
-  const [errors, setErrors] = useState({ fullName: "", phone: "" });
+  const [formData, setFormData] = useState<FormData>({
+    fullName: "",
+    phone: "",
+  });
+
+  const [errors, setErrors] = useState<FormErrors>({
+    fullName: "",
+    phone: "",
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    if (value.length === 0) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (!value.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+
       return;
     }
 
     if (name === "fullName") {
-      const result = fullNameSchema.safeParse({ fullName: value });
+      const result = fullNameSchema.safeParse({
+        fullName: value,
+      });
+
       if (!result.success) {
         setErrors((prev) => ({
           ...prev,
-          [name]: result.error.issues[0]?.message || "Invalid input",
+          fullName:
+            result.error.issues[0]?.message ?? "Please enter a valid name",
         }));
       }
-    } else if (name === "phone") {
-      const result = phoneNumberSchema.safeParse({ phone: value });
+    }
+
+    if (name === "phone") {
+      const result = phoneNumberSchema.safeParse({
+        phone: value,
+      });
+
       if (!result.success) {
         setErrors((prev) => ({
           ...prev,
-          [name]: result.error.issues[0]?.message || "Invalid input",
+          phone:
+            result.error.issues[0]?.message ??
+            "Please enter a valid phone number",
         }));
       }
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setErrors({ fullName: "", phone: "" });
+
+    if (isLoading) return;
+
+    setErrors({
+      fullName: "",
+      phone: "",
+    });
 
     const fullNameResult = fullNameSchema.safeParse({
-      fullName: formData.fullName,
+      fullName: formData.fullName.trim(),
     });
-    if (!fullNameResult.success) {
-      const fieldErrors = fullNameResult.error.flatten().fieldErrors;
-      setErrors((prev) => ({
-        ...prev,
-        fullName: fieldErrors.fullName?.[0] ?? "",
-      }));
-      return;
-    }
 
     const phoneResult = phoneNumberSchema.safeParse({
-      phone: formData.phone,
+      phone: formData.phone.trim(),
     });
-    if (!phoneResult.success) {
-      const fieldErrors = phoneResult.error.flatten().fieldErrors;
-      setErrors((prev) => ({
-        ...prev,
-        phone: fieldErrors.phone?.[0] ?? "",
-      }));
+
+    if (!fullNameResult.success || !phoneResult.success) {
+      setErrors({
+        fullName: fullNameResult.error?.issues[0]?.message ?? "",
+        phone: phoneResult.error?.issues[0]?.message ?? "",
+      });
+
       return;
     }
 
     setIsLoading(true);
 
+    // Simulate API request for now.
     setTimeout(() => {
-      const capitalizedName = capitalizeWords(formData.fullName);
-
-      if (onComplete) {
-        onComplete({
-          fullName: capitalizedName,
-          phone: formData.phone.trim(),
-        });
-      }
+      const fullName = capitalizeWords(formData.fullName.trim());
+      const phone = formData.phone.trim();
 
       updateUserData({
-        fullName: capitalizedName,
-        phoneNumber: formData.phone.trim(),
+        fullName,
+        phoneNumber: phone,
         profileComplete: true,
       });
 
+      onComplete?.({
+        fullName,
+        phone,
+      });
+
       setIsLoading(false);
-    }, 1500);
+
+      toast.success("Profile completed successfully");
+    }, 1000);
+  }
+
+  function handleClose() {
+    if (isLoading) return;
+
+    setFormData({
+      fullName: "",
+      phone: "",
+    });
+
+    setErrors({
+      fullName: "",
+      phone: "",
+    });
+
+    onClose?.();
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="mb-6">
+    <Modal open={open} onClose={handleClose}>
+      <div className="mb-5">
         <h2 className="text-xl font-extrabold tracking-tight text-gray-dark">
           Complete your profile
         </h2>
-        <p className="mt-1 text-sm leading-relaxed text-gray-light">
-          Add your name and phone number to start buying airtime, data, and
-          bills.
+
+        <p className="mt-1.5 text-sm leading-relaxed text-gray-light">
+          Add your name and phone number to continue.
         </p>
       </div>
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-5 mb-5" noValidate>
         {/* Full name */}
         <AuthInput
           label="Full name"
@@ -143,24 +202,16 @@ function CompleteProfileModal({
           error={errors.phone}
         />
 
-        <Button
-          label="Save"
-          htmlType="submit"
-          loading={isLoading}
-          disabled={
-            !formData.fullName.trim() || !formData.phone.trim() || isLoading
-          }
-        />
-
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full cursor-pointer py-2 text-center text-sm font-semibold text-gray-light"
-          >
-            Do this later
-          </button>
-        )}
+        <div className="pt-2">
+          <Button
+            label="Continue"
+            htmlType="submit"
+            loading={isLoading}
+            disabled={
+              !formData.fullName.trim() || !formData.phone.trim() || isLoading
+            }
+          />
+        </div>
       </form>
     </Modal>
   );

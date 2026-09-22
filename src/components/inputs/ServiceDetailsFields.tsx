@@ -84,6 +84,7 @@ function ServiceDetailsFields({
         </button>
 
         <div className="flex items-center gap-1.5 rounded-full border border-transparent bg-gray-extra-light px-4 py-1 transition-colors focus-within:border-primary">
+          {/* Account number */}
           <input
             type="text"
             inputMode="numeric"

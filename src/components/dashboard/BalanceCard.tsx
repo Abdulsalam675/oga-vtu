@@ -1,24 +1,47 @@
 import { memo, useState } from "react";
 import { Icon } from "@iconify/react";
 import FundWalletModal from "../modals/FundWalletModal";
+import toast from "react-hot-toast";
 
 interface BalanceCardProps {
   balance?: number;
+  isLoading?: boolean;
   onFundClick?: () => void;
   showProfileBanner?: boolean;
   onBannerClick?: () => void;
   setHideAmount: () => void;
   hideAmount: boolean;
+  profileComplete?: boolean;
 }
 
+function BalanceSkeleton() {
+  return (
+    <div
+      role="status"
+      aria-label="Loading balance"
+      className="h-8 w-24 animate-pulse rounded-md bg-white/30 md:h-9 md:w-30"
+    />
+  );
+}
 function BalanceCard({
   balance = 0,
+  isLoading = false,
   showProfileBanner = false,
   onBannerClick,
   hideAmount,
   setHideAmount,
+  profileComplete = false,
 }: BalanceCardProps) {
   const [showFundModal, setShowFundModal] = useState(false);
+
+  function handleFundClick() {
+    if (!profileComplete) {
+      toast.error("Complete your profile to continue");
+      return;
+    }
+
+    setShowFundModal(true);
+  }
 
   const formattedBalance = new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -60,8 +83,9 @@ function BalanceCard({
               <button
                 type="button"
                 onClick={setHideAmount}
+                disabled={isLoading}
                 aria-label={hideAmount ? "Hide balance" : "Show balance"}
-                className="cursor-pointer transition-opacity hover:opacity-82"
+                className="cursor-pointer transition-opacity hover:opacity-82 disabled:opacity-40"
               >
                 <Icon
                   icon={hideAmount ? "mdi:eye-off" : "solar:eye-bold"}
@@ -71,20 +95,27 @@ function BalanceCard({
             </div>
             <button
               type="button"
-              onClick={() => setShowFundModal(true)}
+              onClick={handleFundClick}
               className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary transition-opacity hover:opacity-90"
             >
               <Icon icon="solar:add-circle-linear" className="h-4 w-4" />
               Fund
             </button>
           </div>
-          <p className="text-2xl font-extrabold tracking-tight tabular-nums md:text-3xl">
-            {hideAmount ? (
-              <span className="text-lg tracking-[0.2em] md:text-xl">••••</span>
-            ) : (
-              formattedBalance
-            )}
-          </p>
+
+          {isLoading ? (
+            <BalanceSkeleton />
+          ) : (
+            <p className="text-2xl font-extrabold tracking-tight tabular-nums md:text-3xl">
+              {hideAmount ? (
+                <span className="text-lg tracking-[0.2em] md:text-xl">
+                  ••••
+                </span>
+              ) : (
+                formattedBalance
+              )}
+            </p>
+          )}
         </div>
       </section>
       <FundWalletModal

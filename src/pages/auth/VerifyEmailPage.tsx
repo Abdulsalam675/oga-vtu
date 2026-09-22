@@ -111,6 +111,7 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
         inputMode="numeric"
         maxLength={1}
         value={value}
+        autoComplete="one-time-code"
         autoFocus={index === 0}
         onChange={(event) => {
           handleInputChange(index, event);
@@ -120,7 +121,7 @@ function CodeInput({ onChange, hasError, isShaking }: CodeInputProps) {
         }}
         onPaste={handlePaste}
         aria-label={`Digit ${index + 1}`}
-        className={`h-12 w-12 text-center bg-gray-extra-light text-2xl font-bold outline-none border rounded-xl transition-all duration-200 ${
+        className={`h-12 w-12 text-center bg-gray-lightest text-2xl font-bold outline-none border rounded-xl transition-all duration-200 ${
           hasError
             ? "border-error focus:border-error"
             : "border-transparent focus:border-primary text-gray-dark"

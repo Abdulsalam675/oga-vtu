@@ -2,8 +2,8 @@ import { memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SubPageLayout from "../../components/layout/SubPageLayout";
-import { demoTransactions } from "../../constants/transactions";
 import type { TransactionCardData } from "../../components/transactions/TransactionCard";
+import { useTransactions } from "../../context/TransactionsContext";
 
 const statusStyles = {
   success: {
@@ -34,12 +34,19 @@ function formatCurrency(amount: number) {
 function TransactionDetailsPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { transactions } = useTransactions();
 
-  const transactionId = location.state?.transactionId as string | undefined;
+  const routeState = location.state as {
+    transactionId?: string;
+    transaction?: TransactionCardData;
+  } | null;
+  const transactionId = routeState?.transactionId;
 
-  const transaction = demoTransactions.find(
-    (item) => item.id === transactionId,
-  ) as TransactionCardData | undefined;
+  const transaction =
+    routeState?.transaction ??
+    (transactions.find((item) => item.id === transactionId) as
+      | TransactionCardData
+      | undefined);
 
   if (!transaction) {
     return (
@@ -72,16 +79,27 @@ function TransactionDetailsPage() {
   const tx = transaction;
   const isCredit = tx.amount > 0;
   const status = statusStyles[tx.status];
+  const transferDetails = tx.transferDetails;
 
-  const rows = [
-    { label: "Type", value: tx.category },
-    {
-      label: "Description",
-      value: tx.description || tx.title,
-    },
-    { label: "Date & time", value: tx.date },
-    { label: "Reference", value: tx.id },
-  ];
+  const rows = transferDetails
+    ? [
+        { label: "From", value: transferDetails.from },
+        { label: "To", value: transferDetails.to },
+        { label: "Account number", value: transferDetails.accountNumber },
+        { label: "Bank", value: transferDetails.bankName },
+        { label: "Narration", value: transferDetails.narration || "—" },
+        { label: "Date & time", value: tx.date },
+        { label: "Reference", value: tx.id },
+      ]
+    : [
+        { label: "Type", value: tx.category },
+        {
+          label: "Description",
+          value: tx.description || tx.title,
+        },
+        { label: "Date & time", value: tx.date },
+        { label: "Reference", value: tx.id },
+      ];
 
   return (
     <SubPageLayout title="Receipt" titleSize="sm">

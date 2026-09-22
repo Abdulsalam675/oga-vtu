@@ -7,7 +7,7 @@ function DashboardWithNavLayout() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <div className="flex-1 pb-24">
+      <div className="flex-1 pb-20">
         <Outlet context={context} />
       </div>
       <BottomNav />

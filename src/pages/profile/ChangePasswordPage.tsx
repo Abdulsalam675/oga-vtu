@@ -5,6 +5,7 @@ import AuthInput from "../../components/inputs/AuthInput";
 import Button from "../../components/buttons/Button";
 import { resetPasswordSchema } from "../../schemas/authSchemas";
 import { getUserData, updateUserData } from "../../utilities/userStorage";
+import toast from "react-hot-toast";
 
 function ChangePasswordPage() {
   const navigate = useNavigate();
@@ -83,7 +84,8 @@ function ChangePasswordPage() {
     setTimeout(() => {
       updateUserData({ password: formData.newPassword });
       setIsLoading(false);
-      navigate("/dashboard/profile/security");
+      navigate(-1);
+      toast.success("Password changed successfully");
     }, 1500);
   }
 

@@ -1,56 +1,36 @@
 import { memo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import CompleteProfileModal from "../../components/modals/CompleteProfileModal";
-import { updateUserData, type UserData } from "../../utilities/userStorage";
+import { useUser } from "../../context/UserContext";
 import Header from "../../components/dashboard/Header";
 import BalanceCard from "../../components/dashboard/BalanceCard";
 import QuickActions from "../../components/dashboard/QuickActions";
 import RecentTransactions from "../../components/dashboard/RecentTransactions";
-
-type DashboardContext = {
-  user: UserData | null;
-  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
-};
-
-const HIDE_AMOUNT_KEY = "hideAmount";
-
-function getStoredHideAmount() {
-  try {
-    return localStorage.getItem(HIDE_AMOUNT_KEY) === "true";
-  } catch {
-    return false;
-  }
-}
+import { useTransactions } from "../../context/TransactionsContext";
 
 function HomePage() {
-  const { user, setUser } = useOutletContext<DashboardContext>();
-  const [hideAmount, setHideAmount] = useState(getStoredHideAmount);
-  const [showCompleteProfile, setShowCompleteProfile] = useState(
-    () => user !== null && user.profileComplete === false,
-  );
+  const { isLoadingUser } = useOutletContext<{ isLoadingUser: boolean }>();
+  const { user, patchUser } = useUser();
+  const { balance } = useTransactions();
+  const [hideAmount, setHideAmount] = useState(user?.hideAmount ?? false);
+  const [showCompleteProfile, setShowCompleteProfile] = useState(false);
 
   const profileComplete = user?.profileComplete ?? false;
   const firstName = user?.fullName?.split(" ")[0];
   const profilePicture = user?.profilePicture || "";
 
   function handleToggleHideAmount() {
-    setHideAmount((prev) => {
-      const next = !prev;
-      localStorage.setItem(HIDE_AMOUNT_KEY, String(next));
-      return next;
-    });
+    const nextHideAmount = !hideAmount;
+    patchUser({ hideAmount: nextHideAmount });
+    setHideAmount(nextHideAmount);
   }
 
   function handleProfileComplete(data: { fullName: string; phone: string }) {
-    const next = updateUserData({
+    patchUser({
       fullName: data.fullName,
       phoneNumber: data.phone,
       profileComplete: true,
     });
-
-    if (next) {
-      setUser(next);
-    }
     setShowCompleteProfile(false);
   }
 
@@ -60,21 +40,18 @@ function HomePage() {
         firstName={firstName}
         profileComplete={profileComplete}
         profilePicture={profilePicture}
-        notificationCount={3}
       />
-
       <BalanceCard
-        balance={5000}
+        balance={balance}
+        isLoading={isLoadingUser}
         hideAmount={hideAmount}
         setHideAmount={handleToggleHideAmount}
         showProfileBanner={!profileComplete}
+        profileComplete={profileComplete}
         onBannerClick={() => setShowCompleteProfile(true)}
       />
 
-      <QuickActions
-        profileComplete={profileComplete}
-        onProfileIncomplete={() => setShowCompleteProfile(true)}
-      />
+      <QuickActions profileComplete={profileComplete} />
 
       <RecentTransactions hideAmount={hideAmount} />
 

@@ -1,19 +1,15 @@
 import { memo, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { type UserData } from "../../utilities/userStorage";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
 import Avatar from "../../components/dashboard/Avatar";
 import CompleteProfileModal from "../../components/modals/CompleteProfileModal";
 import { updateUserData } from "../../utilities/userStorage";
-
-type DashboardContext = {
-  user: UserData | null;
-  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
-};
+import toast from "react-hot-toast";
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const { user, setUser } = useOutletContext<DashboardContext>();
+  const { user, patchUser, setUser } = useUser();
   const [showCompleteProfile, setShowCompleteProfile] = useState(false);
 
   const displayName = user?.fullName?.trim() || "Complete your profile";
@@ -28,64 +24,64 @@ function ProfilePage() {
       label: "Personal information",
       subtitle: "Name, phone, email",
       icon: "solar:user-linear",
-      disabled: false,
     },
     {
       id: "security",
       label: "Security",
       subtitle: "Password, PIN",
       icon: "solar:shield-keyhole-linear",
-      disabled: false,
     },
     {
       id: "notifications",
       label: "Notifications",
       subtitle: "Coming soon",
       icon: "solar:bell-linear",
-      disabled: true,
     },
     {
       id: "support",
       label: "Help & support",
       subtitle: "FAQs and contact us",
       icon: "solar:help-linear",
-      disabled: false,
     },
   ];
-
   function handleMenuItemClick(id: string) {
-    if (id === "notifications") return;
-
-    if (!profileComplete) {
-      setShowCompleteProfile(true);
-      return;
-    }
-
     switch (id) {
       case "personal":
-        navigate("/dashboard/profile/personal");
+        if (!profileComplete) {
+          setShowCompleteProfile(true);
+        } else {
+          navigate("/dashboard/profile/personal");
+        }
         break;
+
       case "security":
+        if (!profileComplete) {
+          toast.error("Complete your profile to continue");
+          return;
+        }
+
         navigate("/dashboard/profile/security");
+
         break;
+
+      case "notifications":
+        toast("Notifications are coming soon");
+        break;
+
       case "support":
         navigate("/dashboard/profile/support");
         break;
+
       default:
         break;
     }
   }
-
   function handleProfileComplete(data: { fullName: string; phone: string }) {
-    const next = updateUserData({
+    patchUser({
       fullName: data.fullName,
       phoneNumber: data.phone,
       profileComplete: true,
     });
-
-    if (next) {
-      setUser(next);
-    }
     setShowCompleteProfile(false);
   }
 
@@ -127,14 +123,8 @@ function ProfilePage() {
               <li key={item.id}>
                 <button
                   type="button"
-                  disabled={item.disabled}
                   onClick={() => handleMenuItemClick(item.id)}
-                  className={
-                    "flex w-full items-center gap-3.5 rounded-xl bg-white px-4 py-4 text-left transition-colors " +
-                    (item.disabled
-                      ? "cursor-not-allowed opacity-60"
-                      : "cursor-pointer active:bg-gray-lightest")
-                  }
+                  className="flex w-full cursor-pointer items-center gap-3.5 rounded-xl bg-white px-4 py-4 text-left transition-colors active:bg-gray-lightest"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     <Icon icon={item.icon} className="h-5 w-5 text-primary" />
@@ -162,8 +152,11 @@ function ProfilePage() {
       <button
         type="button"
         onClick={handleLogout}
-        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-white px-4 py-4 text-sm font-semibold text-error transition-colors active:bg-gray-lightest"
+        className="flex w-full text-error cursor-pointer items-center gap-3.5 rounded-xl bg-white px-4 py-4 text-left transition-colors active:bg-gray-lightest"
       >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-transparent">
+          <Icon icon="solar:logout-2-linear" className="h-5 w-5" />
+        </div>
         Log out
       </button>
 

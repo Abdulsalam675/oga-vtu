@@ -10,6 +10,7 @@ interface AuthInputProps {
   readOnly?: boolean;
   backgroundColor?: string;
   value: string;
+  autoComplete?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isPassword?: boolean;
@@ -24,6 +25,7 @@ function AuthInput({
   placeholder,
   readOnly,
   value,
+  autoComplete,
   onChange,
   onBlur,
   isPassword = false,
@@ -34,6 +36,19 @@ function AuthInput({
 
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
   const inputId = `auth-input-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  const inferredAutoComplete =
+    autoComplete ??
+    (type === "email"
+      ? "email"
+      : type === "tel"
+        ? "tel"
+        : name === "fullName"
+          ? "name"
+          : name === "password" || name === "currentPassword"
+            ? "current-password"
+            : name.toLowerCase().includes("password")
+              ? "new-password"
+              : "off");
 
   const shouldShowError = !!error;
 
@@ -71,6 +86,7 @@ function AuthInput({
           placeholder={placeholder}
           value={value}
           name={name}
+          autoComplete={inferredAutoComplete}
           readOnly={readOnly}
           onBlur={onBlur}
           onChange={onChange}
@@ -95,6 +111,7 @@ function AuthInput({
         )}
       </div>
 
+      {/* Keeps original field error text rendering logic */}
       {shouldShowError && (
         <p className="mt-1 text-xs text-error font-medium pl-3 animate-fade-in">
           {error}

@@ -23,6 +23,13 @@ export interface TransactionCardData {
   amount: number;
   status: TransactionStatus;
   category: TransactionCategory;
+  transferDetails?: {
+    from: string;
+    to: string;
+    accountNumber: string;
+    bankName: string;
+    narration: string;
+  };
 }
 
 interface TransactionCardProps {
@@ -66,7 +73,7 @@ function TransactionCard({
 
   function handleTransactionClick() {
     navigate("/dashboard/transaction-details", {
-      state: { transactionId: transaction.id },
+      state: { transactionId: transaction.id, transaction },
     });
   }
 

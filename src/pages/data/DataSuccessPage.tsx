@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionSuccess from "../../components/layout/TransactionSuccess";
+import { useTransactions } from "../../context/TransactionsContext";
 
 interface LocationState {
   phoneNumber?: string;
@@ -14,6 +15,7 @@ function DataSuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state || {}) as LocationState;
+  const { addTransaction } = useTransactions();
 
   const phoneNumber = state.phoneNumber || "8012345678";
   const networkName = state.networkName || "MTN";
@@ -25,6 +27,7 @@ function DataSuccessPage() {
     () => `OGA${Date.now().toString().slice(-10)}`,
   );
   const [timestamp] = useState(() => new Date());
+  const hasSaved = useRef(false);
 
   const formattedDate = timestamp.toLocaleDateString("en-NG", {
     day: "numeric",
@@ -36,6 +39,25 @@ function DataSuccessPage() {
     minute: "2-digit",
     hour12: true,
   });
+
+  useEffect(() => {
+    if (hasSaved.current) return;
+    hasSaved.current = true;
+
+    addTransaction(
+      {
+        id: transactionId,
+        title: `${networkName} Data`,
+        description: phoneNumber,
+        date: formattedTime,
+        dateGroup: "Today",
+        amount: -Number(amount),
+        status: "success",
+        category: "data",
+      },
+      -Number(amount),
+    );
+  }, []);
 
   const subtitle = planValidity
     ? `${networkName} · ${planName} · ${planValidity}`

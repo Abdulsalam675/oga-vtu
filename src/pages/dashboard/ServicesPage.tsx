@@ -2,6 +2,8 @@ import { memo } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { serviceIcons } from "../../constants/serviceIcons";
+import { useUser } from "../../context/UserContext";
+import toast from "react-hot-toast";
 
 const services = [
   {
@@ -34,12 +36,7 @@ const services = [
     icon: serviceIcons.tv,
     path: "/dashboard/cable-tv",
   },
-  {
-    id: "betting",
-    label: "Betting",
-    icon: "solar:football-linear",
-    path: "",
-  },
+  { id: "betting", label: "Betting", icon: "solar:football-linear", path: "" },
   {
     id: "exam-pin",
     label: "Exam PIN",
@@ -64,28 +61,48 @@ const services = [
     icon: "solar:ticket-sale-linear",
     path: "",
   },
-  {
-    id: "water",
-    label: "Water",
-    icon: "solar:waterdrops-linear",
-    path: "",
-  },
-  {
-    id: "bulk-sms",
-    label: "Bulk SMS",
-    icon: "solar:letter-linear",
-    path: "",
-  },
-  {
-    id: "gift-card",
-    label: "Gift Cards",
-    icon: "solar:gift-linear",
-    path: "",
-  },
+  { id: "water", label: "Water", icon: "solar:waterdrops-linear", path: "" },
+  { id: "bulk-sms", label: "Bulk SMS", icon: "solar:letter-linear", path: "" },
+  { id: "gift-card", label: "Gift Cards", icon: "solar:gift-linear", path: "" },
 ] as const;
 
 function ServicesPage() {
   const navigate = useNavigate();
+  const { user } = useUser();
+  const profileComplete = user?.profileComplete ?? false;
+
+  function handleServiceClick(id: string, label: string, path: string) {
+    if (!path) {
+      toast(`${label} is coming soon`);
+      return;
+    }
+
+    if (!profileComplete) {
+      toast.error("Complete your profile to continue");
+      return;
+    }
+
+    // 3. Switch statement routing based on service ID
+    switch (id) {
+      case "transfer":
+        navigate("/dashboard/transfer");
+        break;
+      case "airtime":
+        navigate("/dashboard/airtime");
+        break;
+      case "data":
+        navigate("/dashboard/data");
+        break;
+      case "electricity":
+        navigate("/dashboard/electricity");
+        break;
+      case "tv":
+        navigate("/dashboard/cable-tv");
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -103,10 +120,9 @@ function ServicesPage() {
             <button
               key={service.id}
               type="button"
-              disabled={!isAvailable}
-              onClick={() => {
-                if (isAvailable) navigate(service.path);
-              }}
+              onClick={() =>
+                handleServiceClick(service.id, service.label, service.path)
+              }
               className="relative flex cursor-pointer flex-col items-center gap-1 rounded-2xl bg-white p-3 transition-opacity active:scale-95 disabled:cursor-not-allowed disabled:opacity-55"
             >
               {!isAvailable && (

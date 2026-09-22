@@ -141,6 +141,7 @@ function ElectricityPage() {
       alert("Enter a valid meter number");
       return;
     }
+
     goToConfirm(String(value));
   }
 

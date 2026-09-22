@@ -4,6 +4,7 @@ import SubPageLayout from "../../components/layout/SubPageLayout";
 import PhoneNetworkFields from "../../components/inputs/PhoneNetworkFields";
 import SelectOptionModal from "../../components/modals/SelectOptionModal";
 import PlanCard from "../../components/transactions/PlanCard";
+import { useUser } from "../../context/UserContext";
 
 type PlanCategory = "Hot deals" | "Daily" | "Weekly" | "Monthly";
 
@@ -126,12 +127,10 @@ const mockPlans: DataPlan[] = [
   },
 ];
 
-interface DataPageProps {
-  userPhoneNumber?: string;
-}
-
-function DataPage({ userPhoneNumber = "" }: DataPageProps) {
+function DataPage() {
   const navigate = useNavigate();
+  const { user } = useUser();
+  const userPhoneNumber = user?.phoneNumber || "";
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -242,7 +241,7 @@ function DataPage({ userPhoneNumber = "" }: DataPageProps) {
               </div>
             </div>
             {filteredPlans.length === 0 ? (
-              <div className="rounded-2xl bg-white px-4 py-10 text-center">
+              <div className="rounded-2xl bg-white px-4 py-32 text-center">
                 <p className="text-sm text-gray-light">
                   No plans in this category
                 </p>

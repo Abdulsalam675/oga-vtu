@@ -2,6 +2,7 @@ import { memo } from "react";
 import SubPageLayout from "./SubPageLayout";
 import Button from "../buttons/Button";
 import PinKeypadModal from "../modals/PinKeypadModal";
+import { useTransactions } from "../../context/TransactionsContext";
 export type ConfirmDetail = {
   label: string;
   value: string;
@@ -38,8 +39,10 @@ function TransactionConfirm({
   onClosePin,
   onPinComplete,
 }: TransactionConfirmProps) {
+  const { balance: availableBalance } = useTransactions();
   const formattedAmount = formatAmount(amount);
   const buttonLabel = payLabel || `Pay ₦${formattedAmount}`;
+  const hasInsufficientBalance = Number(amount) > availableBalance;
 
   return (
     <SubPageLayout title="Confirm payment" titleSize="sm">
@@ -83,10 +86,25 @@ function TransactionConfirm({
                 <span className="text-sm font-semibold text-gray-dark">
                   Total
                 </span>
-                <span className="text-base font-extrabold text-primary">
+                <span className="text-base font-extrabold text-gray-dark">
                   ₦{formattedAmount}
                 </span>
               </div>
+
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-gray-dark">
+                  Available balance
+                </span>
+                <span className="text-right text-sm font-semibold text-gray-dark">
+                  ₦{formatAmount(availableBalance)}
+                </span>
+              </div>
+
+              {hasInsufficientBalance && (
+                <p className="text-xs font-medium text-error">
+                  Insufficient balance for this payment
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -96,7 +114,10 @@ function TransactionConfirm({
             label={buttonLabel}
             htmlType="button"
             loading={isLoading}
-            onClick={onPay}
+            disabled={hasInsufficientBalance}
+            onClick={() => {
+              if (!hasInsufficientBalance) onPay();
+            }}
           />
         </div>
       </div>

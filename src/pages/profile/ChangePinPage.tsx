@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import SubPageLayout from "../../components/layout/SubPageLayout";
 import { createPinSchema } from "../../schemas/authSchemas";
 import { getUserData, updateUserData } from "../../utilities/userStorage";
+import toast from "react-hot-toast";
 
 type FlowStep = "verify" | "create" | "confirm";
 
@@ -91,6 +92,7 @@ function ChangePinPage() {
 
     updateUserData({ pin });
     navigate(-1);
+    toast.success("PIN changed successfully");
   }
 
   const titles: Record<FlowStep, string> = {

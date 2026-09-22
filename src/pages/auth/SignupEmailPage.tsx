@@ -58,6 +58,7 @@ function SignUpEmail() {
       emailVerified: false,
       isLoggedIn: false,
     });
+
     setTimeout(() => {
       navigate("/verify-email");
     }, 2000);

@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionSuccess from "../../components/layout/TransactionSuccess";
+import { useTransactions } from "../../context/TransactionsContext";
 
 interface LocationState {
   discoName?: string;
@@ -14,6 +15,7 @@ function ElectricitySuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = (location.state || {}) as LocationState;
+  const { addTransaction } = useTransactions();
 
   const discoName = state.discoName || "Electricity";
   const discoShortName = state.discoShortName || "";
@@ -34,6 +36,7 @@ function ElectricitySuccessPage() {
     () => `OGA${Date.now().toString().slice(-10)}`,
   );
   const [timestamp] = useState(() => new Date());
+  const hasSaved = useRef(false);
 
   const formattedDate = timestamp.toLocaleDateString("en-NG", {
     day: "numeric",
@@ -45,6 +48,25 @@ function ElectricitySuccessPage() {
     minute: "2-digit",
     hour12: true,
   });
+
+  useEffect(() => {
+    if (hasSaved.current) return;
+    hasSaved.current = true;
+
+    addTransaction(
+      {
+        id: transactionId,
+        title: `${distributor} Electricity`,
+        description: meterNumber,
+        date: formattedTime,
+        dateGroup: "Today",
+        amount: -Number(amount),
+        status: "success",
+        category: "electricity",
+      },
+      -Number(amount),
+    );
+  }, []);
 
   const details = [
     { label: "Transaction ID", value: transactionId },

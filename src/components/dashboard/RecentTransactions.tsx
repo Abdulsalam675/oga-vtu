@@ -1,20 +1,18 @@
 import { memo } from "react";
-import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import TransactionCard, {
-  type TransactionCardData,
-} from "../transactions/TransactionCard";
-import { demoTransactions } from "../../constants/transactions";
+import TransactionCard from "../transactions/TransactionCard";
+import { useTransactions } from "../../context/TransactionsContext";
+import TransactionsSkeleton from "../TransactionsSkeleton";
+import EmptyTransactions from "./EmptyTransactions";
 
 interface RecentTransactionsProps {
-  transactions?: TransactionCardData[];
   hideAmount?: boolean;
 }
 
-function RecentTransactions({
-  transactions = demoTransactions,
-  hideAmount = false,
-}: RecentTransactionsProps) {
+function RecentTransactions({ hideAmount = false }: RecentTransactionsProps) {
+  const { transactions, isLoading } = useTransactions();
+  const recent = transactions.slice(0, 5);
+
   return (
     <section className="w-full">
       <div className="mb-3 flex items-center justify-between">
@@ -29,28 +27,20 @@ function RecentTransactions({
         </Link>
       </div>
 
-      {transactions.length === 0 ? (
-        <div className="rounded-2xl bg-white px-4 py-10 text-center">
-          <Icon
-            icon="solar:history-linear"
-            className="mx-auto mb-3 h-12 w-12 text-gray-light"
-          />
-          <p className="text-sm font-semibold text-gray-dark">
-            No transactions yet
-          </p>
-        </div>
+      {isLoading ? (
+        <TransactionsSkeleton count={3} />
+      ) : recent.length === 0 ? (
+        <EmptyTransactions />
       ) : (
         <ul className="overflow-hidden rounded-2xl bg-white">
-          {transactions.map((transaction, index) => {
-            return (
-              <TransactionCard
-                key={transaction.id}
-                transaction={transaction}
-                isLast={index === transactions.length - 1}
-                hideAmount={hideAmount}
-              />
-            );
-          })}
+          {recent.map((transaction, index) => (
+            <TransactionCard
+              key={transaction.id}
+              transaction={transaction}
+              isLast={index === recent.length - 1}
+              hideAmount={hideAmount}
+            />
+          ))}
         </ul>
       )}
     </section>
