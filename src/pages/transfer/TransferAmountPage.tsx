@@ -29,7 +29,7 @@ function TransferAmountPage() {
   const [narration, setNarration] = useState("");
 
   const amountNumber = Number(amount) || 0;
-  const canContinue = amountNumber >= MIN_AMOUNT && amountNumber <= balance;
+  const canContinue = amountNumber >= MIN_AMOUNT;
 
   function handleContinue() {
     if (!canContinue) return;
@@ -49,23 +49,11 @@ function TransferAmountPage() {
   return (
     <SubPageLayout title="Amount" titleSize="sm">
       <div className="space-y-6">
-        <div className="rounded-2xl bg-primary/10 px-4 py-3">
-          <p className="text-xs text-gray-semi-dark">Available balance</p>
-          <p className="mt-0.5 text-lg font-extrabold text-primary">
-            ₦{balance.toLocaleString("en-NG", { minimumFractionDigits: 0 })}
-          </p>
-        </div>
-
         <AmountFields
           amount={amount}
           onAmountChange={setAmount}
           presetAmounts={predefinedAmounts}
           onPresetClick={(value: number) => setAmount(String(value))}
-          error={
-            amountNumber > balance
-              ? "Amount exceeds available balance"
-              : undefined
-          }
         />
 
         <div>
