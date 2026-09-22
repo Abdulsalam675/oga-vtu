@@ -52,6 +52,7 @@ function TransferAmountPage() {
         <AmountFields
           amount={amount}
           onAmountChange={setAmount}
+          placeholder="100.00 - 5,000,000.00"
           presetAmounts={predefinedAmounts}
           onPresetClick={(value: number) => setAmount(String(value))}
         />

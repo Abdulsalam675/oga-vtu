@@ -105,6 +105,7 @@ function AirtimePage() {
           amount={amount}
           onAmountChange={setAmount}
           presetAmounts={predefinedAmounts}
+          placeholder="50-500,00"
           onPresetClick={handlePresetClick}
           presetContainerClassName="mt-5 grid grid-cols-3 gap-3.5"
           presetButtonClassName="cursor-pointer rounded-lg bg-gray-extra-light px-3 py-6 text-base font-medium text-gray-dark transition-colors active:bg-gray-lightest disabled:opacity-50"
