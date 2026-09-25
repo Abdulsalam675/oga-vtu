@@ -56,6 +56,7 @@ function SignUpEmail() {
       password: formData.password,
       profileComplete: false,
       emailVerified: false,
+      BvnVerified: false,
       isLoggedIn: false,
     });
 

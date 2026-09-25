@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { Icon } from "@iconify/react";
 import FundWalletModal from "../modals/FundWalletModal";
 import toast from "react-hot-toast";
+import KycRequiredModal from "../modals/KycRequiredModal";
 
 interface BalanceCardProps {
   balance?: number;
@@ -11,7 +12,8 @@ interface BalanceCardProps {
   onBannerClick?: () => void;
   setHideAmount: () => void;
   hideAmount: boolean;
-  profileComplete?: boolean;
+  profileComplete: boolean;
+  BvnVerified: boolean;
 }
 
 function BalanceSkeleton() {
@@ -31,12 +33,19 @@ function BalanceCard({
   hideAmount,
   setHideAmount,
   profileComplete = false,
+  BvnVerified = false,
 }: BalanceCardProps) {
   const [showFundModal, setShowFundModal] = useState(false);
+  const [showBVNSheet, setShowBVNSheet] = useState(false);
 
   function handleFundClick() {
     if (!profileComplete) {
       toast.error("Complete your profile to continue");
+      return;
+    }
+
+    if (!BvnVerified) {
+      setShowBVNSheet(true);
       return;
     }
 
@@ -118,6 +127,10 @@ function BalanceCard({
           )}
         </div>
       </section>
+      <KycRequiredModal
+        open={showBVNSheet}
+        onClose={() => setShowBVNSheet(false)}
+      />
       <FundWalletModal
         open={showFundModal}
         onClose={() => setShowFundModal(false)}

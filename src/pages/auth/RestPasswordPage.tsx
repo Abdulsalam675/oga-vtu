@@ -62,7 +62,7 @@ function ResetPassword() {
 
     setIsLoading(true);
     setTimeout(() => {
-      navigate("/signin");
+      navigate("/signin", { replace: true });
     }, 2000);
   }
 

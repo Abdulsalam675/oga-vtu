@@ -65,7 +65,7 @@ function SignInEmail() {
         storedUser.password === formData.password
       ) {
         updateUserData({ isLoggedIn: true });
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       } else {
         setGeneralError("Invalid Email or Password");
       }

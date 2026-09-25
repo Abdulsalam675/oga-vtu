@@ -33,7 +33,7 @@ function Modal({ open, onClose, children, showDash = true }: ModalProps) {
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
           <motion.div
-            className="absolute inset-0 bg-gray-dark/50"
+            className="absolute inset-0 bg-gray-dark/50 backdrop-blur-[2px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -102,6 +102,24 @@ export const phoneNumberSchema = z.object({
     ),
 });
 
+// BVN verification validation.
+export const bvnSchema = z.object({
+  bvn: z
+    .string()
+    .trim()
+    .min(1, "BVN is required")
+    .length(11, "BVN must be exactly 11 digits")
+    .regex(/^\d+$/, "BVN must contain only numbers"),
+  dateOfBirth: z
+    .string()
+    .min(1, "Date of birth is required")
+    .refine((val) => {
+      const date = new Date(val);
+      const today = new Date();
+      return !Number.isNaN(date.getTime()) && date <= today;
+    }, "Enter a valid date of birth"),
+});
+
 export type SignupEmailSchema = z.infer<typeof signupEmailSchema>;
 export type SigninEmailSchema = z.infer<typeof signinEmailSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
@@ -110,3 +128,4 @@ export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>;
 export type CreatePinSchema = z.infer<typeof createPinSchema>;
 export type FullNameSchema = z.infer<typeof fullNameSchema>;
 export type PhoneNumberSchema = z.infer<typeof phoneNumberSchema>;
+export type BvnSchema = z.infer<typeof bvnSchema>;

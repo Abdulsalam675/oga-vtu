@@ -15,6 +15,7 @@ function PersonalInfoPage() {
   const [fullName, setFullName] = useState(user?.fullName || "");
   const [phone, setPhone] = useState(user?.phoneNumber || "");
   const email = user?.email || "";
+  const isBvnVerified = user?.BvnVerified || false;
 
   const [errors, setErrors] = useState({ fullName: "", phone: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -114,6 +115,7 @@ function PersonalInfoPage() {
           placeholder="Enter your full name"
           backgroundColor="bg-gray-lightest"
           value={fullName}
+          readOnly={isBvnVerified}
           onChange={handleFullNameChange}
           error={errors.fullName}
         />
@@ -127,6 +129,7 @@ function PersonalInfoPage() {
           placeholder="Enter your phone number"
           backgroundColor="bg-gray-lightest"
           value={phone}
+          readOnly={isBvnVerified}
           onChange={handlePhoneChange}
           error={errors.phone}
         />
@@ -144,25 +147,35 @@ function PersonalInfoPage() {
             readOnly
             onChange={() => {}}
           />
-          <p className="mt-1.5 flex items-center gap-1 pl-3 text-xs text-gray-light">
-            <Icon
-              icon="solar:lock-keyhole-minimalistic-linear"
-              className="h-3.5 w-3.5"
-            />
-            Email can't be changed here
-          </p>
+          {!isBvnVerified && (
+            <p className="mt-1.5 flex items-center gap-1 pl-3 text-xs text-gray-light">
+              <Icon
+                icon="solar:lock-keyhole-minimalistic-linear"
+                className="h-3.5 w-3.5"
+              />
+              Email can't be changed here
+            </p>
+          )}
         </div>
       </div>
-
-      <div className="mt-6">
-        <Button
-          label={saved ? "Saved" : "Save changes"}
-          htmlType="button"
-          loading={isLoading}
-          disabled={!hasChanges || isLoading}
-          onClick={handleSave}
-        />
-      </div>
+      {isBvnVerified ? (
+        <div className="mt-5 rounded-2xl border border-gray-lightest bg-gray-extra-light px-3 py-2">
+          <p className="text-xs leading-relaxed text-gray-semi-dark">
+            Your identity has been verified. To update your personal
+            information, please contact our support team.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-6">
+          <Button
+            label={saved ? "Saved" : "Save changes"}
+            htmlType="button"
+            loading={isLoading}
+            disabled={!hasChanges || isLoading}
+            onClick={handleSave}
+          />
+        </div>
+      )}
     </SubPageLayout>
   );
 }

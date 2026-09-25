@@ -16,6 +16,7 @@ function HomePage() {
   const [showCompleteProfile, setShowCompleteProfile] = useState(false);
 
   const profileComplete = user?.profileComplete ?? false;
+  const BvnVerified = user?.BvnVerified ?? false;
   const firstName = user?.fullName?.split(" ")[0];
   const profilePicture = user?.profilePicture || "";
 
@@ -47,6 +48,7 @@ function HomePage() {
         hideAmount={hideAmount}
         setHideAmount={handleToggleHideAmount}
         showProfileBanner={!profileComplete}
+        BvnVerified={BvnVerified}
         profileComplete={profileComplete}
         onBannerClick={() => setShowCompleteProfile(true)}
       />

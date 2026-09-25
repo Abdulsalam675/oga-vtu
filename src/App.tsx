@@ -44,6 +44,8 @@ import TransferAmountPage from "./pages/transfer/TransferAmountPage";
 import TransferConfirmPage from "./pages/transfer/TransferConfirmPage";
 import TransferSuccessPage from "./pages/transfer/TransferSuccessPage";
 import { UserProvider } from "./context/UserContext";
+import BvnPage from "./pages/kyc/BvnPage";
+import BvnSuccessPage from "./pages/kyc/BvnSuccessPage";
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 730);
@@ -95,7 +97,11 @@ function App() {
             <Route path="services" element={<ServicesPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
+
+          <Route path="bvn" element={<BvnPage />} />
+          <Route path="bvn/success" element={<BvnSuccessPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
+
           <Route path="transfer" element={<TransferPage />} />
           <Route path="transfer/amount" element={<TransferAmountPage />} />
           <Route path="transfer/confirm" element={<TransferConfirmPage />} />

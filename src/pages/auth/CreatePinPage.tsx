@@ -80,7 +80,7 @@ function CreatePin() {
 
     updateUserData({ pin: pin, isLoggedIn: true });
 
-    navigate("/dashboard");
+    navigate("/dashboard", { replace: true });
   }
 
   return (

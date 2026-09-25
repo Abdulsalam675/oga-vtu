@@ -4,6 +4,7 @@ export interface UserData {
   pin?: string;
   profilePicture?: string;
   profileComplete: boolean;
+  BvnVerified: boolean;
   emailVerified: boolean;
   fullName?: string;
   phoneNumber?: string;

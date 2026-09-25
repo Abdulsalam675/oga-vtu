@@ -3,9 +3,11 @@ import { Icon } from "@iconify/react";
 
 interface ClearButtonProps {
   onClick: () => void;
+  height?: number;
+  width?: number;
 }
 
-function ClearButton({ onClick }: ClearButtonProps) {
+function ClearButton({ onClick, height = 20, width = 20 }: ClearButtonProps) {
   return (
     <button
       type="button"
@@ -13,7 +15,7 @@ function ClearButton({ onClick }: ClearButtonProps) {
       aria-label="Clear"
       className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-normal/80"
     >
-      <Icon icon="solar:close-circle-bold" className="h-6 w-6" />
+      <Icon icon="solar:close-circle-bold" height={height} width={width} />
     </button>
   );
 }
