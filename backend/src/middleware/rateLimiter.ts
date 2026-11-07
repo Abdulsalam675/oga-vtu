@@ -1,45 +1,36 @@
 import rateLimit from "express-rate-limit";
 
-export const signUpLimiter = rateLimit({
+export const dataSavingLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
-  limit: 5,
+  limit: 10, // Max 10 submissions per hour per IP
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: {
     status: false,
-    message: "Too many account registration attempts. Please try again later.",
+    message: "Too many registration attempts. Please try again later.",
   },
 });
 
-export const resendEmailLimiter = rateLimit({
+export const actionTriggerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes window
-  limit: 3,
+  limit: 5, // Max 5 requests per 15 minutes per IP
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: {
     status: false,
-    message: "Too many email requests. Please try again later.",
+    message:
+      "Too many requests. Please wait a few minutes before trying again.",
   },
 });
 
-export const verifyEmailLimiter = rateLimit({
+export const codeVerificationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes window
-  limit: 5,
+  limit: 5, // Max 5 entry attempts per 15 minutes per IP
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: {
     status: false,
-    message: "Too many verification attempts. Please try again later.",
-  },
-});
-
-export const forgotPasswordLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes window
-  limit: 3,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  message: {
-    status: false,
-    message: "Too many reset requests. Please try again later.",
+    message:
+      "Too many incorrect verification attempts. Please try again after 15 minutes.",
   },
 });

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
+  emailSchema,
   loginSchema,
+  phoneNumberSchema,
   requestOtpSchema,
   resetPasswordSchema,
   signupSchema,
@@ -11,10 +13,87 @@ import { compareValues, hashString, hashValue } from "../utils/hash.js";
 import { createOtp, verifyOtp } from "../services/otp.js";
 import { sendOTPEmail } from "../services/email.js";
 import { generateUserSession } from "../services/auth.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
 import { toPublicUser } from "../utils/user.js";
 
 const authRoutes = Router();
+
+// Check email availability route
+authRoutes.post("/check-email", async (req, res) => {
+  const result = emailSchema.safeParse(req.body.email);
+  if (!result.success) {
+    return res.status(400).json({
+      status: false,
+      message: "Invalid email format",
+      errors: result.error.issues.map((err) => err.message),
+    });
+  }
+
+  const email = result.data;
+
+  try {
+    const existing = await pool.query(`SELECT id FROM users WHERE email = $1`, [
+      email,
+    ]);
+
+    if (existing.rows.length > 0) {
+      return res.status(200).json({
+        status: true,
+        message: "Email is already registered",
+        data: { available: false },
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Email is available",
+      data: { available: true },
+    });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
+  }
+});
+
+// Check phone number availability route
+authRoutes.post("/check-phone", async (req, res) => {
+  const result = phoneNumberSchema.safeParse(req.body.phoneNumber);
+  if (!result.success) {
+    return res.status(400).json({
+      status: false,
+      message: "Invalid phone number format",
+      errors: result.error.issues.map((err) => err.message),
+    });
+  }
+  const phoneNumber = result.data;
+
+  try {
+    const existing = await pool.query(
+      `SELECT id FROM users WHERE phone_number = $1`,
+      [phoneNumber],
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(200).json({
+        status: true,
+        message: "This phone number is already linked to another account",
+        data: { available: false },
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Phone number is available",
+      data: { available: true },
+    });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
+  }
+});
 
 // request OTP route
 authRoutes.post("/request-otp", async (req, res) => {
@@ -89,7 +168,7 @@ authRoutes.post("/verify-otp", async (req, res) => {
   }
 });
 
-// Sign-up route
+// signup route
 authRoutes.post("/signup", async (req, res) => {
   const result = signupSchema.safeParse(req.body);
   if (!result.success) {
@@ -330,35 +409,6 @@ authRoutes.post("/reset-password", async (req, res) => {
     });
   } finally {
     client.release();
-  }
-});
-
-// Logout route
-authRoutes.post("/logout", authMiddleware, async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ status: false, message: "Not authorized" });
-  }
-
-  const userId = req.user.id;
-
-  try {
-    await pool.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [userId]);
-
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
-
-    return res.status(200).json({
-      status: true,
-      message: "Logout successful.",
-    });
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal server error" });
   }
 });
 

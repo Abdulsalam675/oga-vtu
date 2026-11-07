@@ -6,6 +6,7 @@ import { toPublicUser } from "../utils/user.js";
 
 const userRoutes = Router();
 
+// Complete profile route
 userRoutes.post("/complete-profile", authMiddleware, async (req, res) => {
   if (!req.user) {
     return res.status(401).json({
@@ -65,6 +66,35 @@ userRoutes.post("/complete-profile", authMiddleware, async (req, res) => {
       status: false,
       message: "Internal server error",
     });
+  }
+});
+
+// Logout route
+userRoutes.post("/logout", authMiddleware, async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ status: false, message: "Not authorized" });
+  }
+
+  const userId = req.user.id;
+
+  try {
+    await pool.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [userId]);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({
+      status: true,
+      message: "Logout successful.",
+    });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
   }
 });
 
