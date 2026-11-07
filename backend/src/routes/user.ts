@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { completeProfileSchema } from "../../schemas/authSchema.js";
-import { normalizeFullName } from "../utils/normalizeFullName.js";
-import { normalizePhoneNumber } from "../utils/normalizePhone.js";
 import { pool } from "../config/db.js";
 import { toPublicUser } from "../utils/user.js";
 
